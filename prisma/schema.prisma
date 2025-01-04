@@ -1,0 +1,63 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int           @id @default(autoincrement())
+  email     String        @unique
+  username  String        @unique
+  password  String
+  role      Role          @default(USER)
+  addresses UserAddress[] @relation("UserAddresses")
+  car       UserCar[]     @relation("UsersCarfk")
+}
+
+model UserAddress {
+  id       Int    @id @default(autoincrement())
+  address  String
+  rt       Int
+  rw       Int
+  district String
+  city     String
+  province String
+  userId   Int
+  user     User   @relation("UserAddresses", fields: [userId], references: [id])
+}
+
+model Cars {
+  id           Int       @id @default(autoincrement())
+  name         String
+  brand        String
+  release_year Int
+  plate_number String    @unique
+  status       String
+  user_car     UserCar[] @relation("UserCarsfk")
+}
+
+model UserCar {
+  id       Int        @id @default(autoincrement())
+  carId    Int
+  userId   Int
+  user     User       @relation("UsersCarfk", fields: [userId], references: [id])
+  car      Cars       @relation("UserCarsfk", fields: [carId], references: [id])
+  location Location[] @relation("UserCarLocationfk")
+}
+
+model Location {
+  id         Int     @id @default(autoincrement())
+  location   String
+  user_carId Int
+  userCar    UserCar @relation("UserCarLocationfk", fields: [user_carId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPERADMIN
+}

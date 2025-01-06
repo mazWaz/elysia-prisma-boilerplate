@@ -3,8 +3,9 @@ import { UserController } from '../../modul/user/user.controller';
 
 const user = new UserController();
 
-const router = new Elysia({ prefix: '/user' })
+export const userRoute = new Elysia({
+  prefix: '/user',
+  detail: { description: 'User endpoints', tags: ['User'] }
+})
   .get('/', user.getAllUser)
-  .post('/user', 'hello User');
-
-export default router;
+  .get('/user', 'hello User');

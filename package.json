@@ -8,12 +8,16 @@
   "dependencies": {
     "@elysiajs/bearer": "^1.2.0",
     "@elysiajs/cors": "^1.2.0",
+    "@elysiajs/cron": "^1.2.0",
     "@elysiajs/jwt": "^1.2.0",
+    "@elysiajs/swagger": "^1.2.0",
     "@prisma/client": "6.1.0",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^2.4.3",
+    "chalk": "^5.4.1",
     "dotenv": "^16.4.7",
     "elysia": "latest",
+    "elysia-helmet": "^2.0.0",
     "joi": "^17.13.3",
     "winston": "^3.17.0"
   },

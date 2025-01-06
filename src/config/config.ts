@@ -8,6 +8,14 @@ const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
     PORT: Joi.number().default(3000),
+    MAINTENANCE_MODE: Joi.boolean().default(true).description('Server Maintenance Mode'),
+    HOST: Joi.string().description('Server Host'),
+    // DATABASE_URL: Joi.string().default().description('PostgresSql Database'),
+
+    SERVER_NAME: Joi.string().required().description('Server Name'),
+    SERVER_VERSION: Joi.string().required().description('Server Version'),
+    SERVER_EMAIL: Joi.string().required().description('Server Email'),
+
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
       .default(30)
@@ -40,6 +48,15 @@ if (error) {
 export default {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
+  maintenanceMode: envVars.maintenanceMode,
+  host: envVars.HOST,
+  // databaseUrl: envVars.DATABASE_URL,
+  server: {
+    name: envVars.SERVER_NAME,
+    author: 'waskito',
+    version: envVars.SERVER_VERSION,
+    email: envVars.SERVER_EMAIL
+  },
   jwt: {
     secret: envVars.JWT_SECRET,
     accessExpirationMinutes: envVars.JWT_ACCESS_EXPIRATION_MINUTES,

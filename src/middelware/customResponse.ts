@@ -31,9 +31,8 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
   let cnt: number | null = null;
   let pge: number | null = null;
   let nte: string | null = null;
-
   // Capture "message"  and "data" data from response
-  msg = response?.message ?? null;
+  msg = response?.message ?? response?.response ?? null;
   err = response?.error ?? (error || error?.code ? error.code : error) ?? null;
   dta = response?.data ?? null;
   cde = response?.code ?? set.status;
@@ -41,6 +40,8 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
   cnt = response?.count;
   pge = response?.page;
   nte = response?.note;
+
+  set.status = response?.code ?? set.status;
 
   const responseObject: any = {
     data: dta,
@@ -52,7 +53,6 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
     message: msg ?? (response instanceof Object ? null : String(response)),
     error: err ?? nte ?? null
   };
-
   return responseObject;
 };
 

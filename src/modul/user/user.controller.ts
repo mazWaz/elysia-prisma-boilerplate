@@ -16,6 +16,11 @@ export class UserController {
     this.userSvc = new UsersService();
   }
 
+  testUser = catchAsync(async ({ set }: any) => {
+    set.status = HttpStatusEnum.HTTP_200_OK;
+    return { data: { asdasd: 'asdasd' }, message: `All Systems GO!` };
+  });
+
   getAllUser = catchAsync(async ({ set, query }: any) => {
     const { isActive, profile } = query;
     const { page, limit, sortBy, sortOrder, searchField, search } = query;

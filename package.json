@@ -18,7 +18,10 @@
     "dotenv": "^16.4.7",
     "elysia": "latest",
     "elysia-helmet": "^2.0.0",
+    "elysia-ip": "^1.0.8",
+    "elysia-rate-limit": "^4.1.0",
     "joi": "^17.13.3",
+    "logestic": "^1.2.4",
     "winston": "^3.17.0"
   },
   "devDependencies": {

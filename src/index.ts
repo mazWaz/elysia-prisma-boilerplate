@@ -7,13 +7,25 @@ import config from './config/config';
 import { cors } from '@elysiajs/cors';
 import { helmet } from 'elysia-helmet';
 import { jwt } from '@elysiajs/jwt';
+import { Logestic } from 'logestic';
+import { ip } from 'elysia-ip';
+import { sessionDerive } from './middelware/session.derive';
+import { checkMaintenanceMode } from './middelware/lifecycleHandlers';
+import { bootLogger, gracefulShutdown } from './utils/systemLogger';
+import { rateLimit } from 'elysia-rate-limit';
+import bearer from '@elysiajs/bearer';
 
 const app = new Elysia({})
   //Server State
   .state('maintenanceMode', config.maintenanceMode === 'true' || false)
   .state('timezone', String(Bun.env.TZ || 'Asia/Jakarta'))
 
-  //Development Plugins
+  /* EXTENSION */
+
+  // Fancy logs
+  .use(Logestic.preset('fancy'))
+
+  //Swagger
   .use(
     await swagger({
       path: '/v1/doc',
@@ -31,6 +43,7 @@ const app = new Elysia({})
       }
     })
   )
+
   // Cors security
   .use(
     cors({
@@ -69,21 +82,36 @@ const app = new Elysia({})
     })
   )
 
+  // JWT
   .use(
     jwt({
       name: 'elysia_jwt',
       secret: config.jwt.secret!,
-      exp: `${config.jwt.refreshExpirationDays}d`
+      exp: `${config.jwt.resetPasswordExpirationMinutes}d`
     })
   )
 
+  // Get IP of client and add to context
+  .use(
+    ip({
+      checkHeaders: ['X-Forwarded-For', 'X-Real-IP', 'requestIP', 'Authentication-Method']
+    })
+  )
+
+  .use(rateLimit({ max: config.env === 'production' ? 8 : 15 }))
+
+  .use(bearer())
+
   //Life Cycle
+  .derive(sessionDerive)
+  .onBeforeHandle([checkMaintenanceMode])
   .onError(({ code, error, set }: any) => ErrorMessages(code, error, set)) // General Error catching system
   .mapResponse(customResponse)
+  .onStop(gracefulShutdown)
 
   //Routes
-  .get('/', 'elysia')
-  .use(router)
-  .listen(3000);
+  .use(router);
 
-console.log(`🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`);
+app.listen(config.port, bootLogger);
+
+console.log(`🦊 Elysia is running at http://${config.host}:${config.port}`);

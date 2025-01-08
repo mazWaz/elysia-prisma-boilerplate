@@ -6,17 +6,13 @@ import swagger from '@elysiajs/swagger';
 import { rootRoute } from './root.route';
 
 const router = new Elysia({
+  prefix: '/v1',
   name: config.server.name,
   detail: { description: `${config.server.name} Server API` }
 })
   .use(rootRoute)
-  .group(
-    '/user',
-    (app) =>
-      app
-        .use(authRoute) // Router Auth
-        .use(userRoute) // Router User
-  );
+  .use(authRoute) // Router Auth
+  .use(userRoute); // Router User;
 
 const routerIndex = new Elysia();
 

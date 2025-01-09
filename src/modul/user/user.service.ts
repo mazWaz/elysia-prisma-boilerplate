@@ -6,6 +6,15 @@ import { Prisma, Role, User } from '@prisma/client';
 import { encryptPassword } from '../../utils/encryption';
 
 export class UsersService {
+  private static instance: UsersService;
+
+  public static getInstace(): UsersService {
+    if (!UsersService.instance) {
+      UsersService.instance = new UsersService();
+    }
+
+    return UsersService.instance;
+  }
   async getUserByid<Key extends keyof User>(
     id: number,
     keys: Key[] = [

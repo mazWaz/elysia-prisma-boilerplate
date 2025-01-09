@@ -14,7 +14,15 @@ import { checkMaintenanceMode } from './middelware/lifecycleHandlers';
 import { bootLogger, gracefulShutdown } from './utils/systemLogger';
 import { rateLimit } from 'elysia-rate-limit';
 import bearer from '@elysiajs/bearer';
-
+import moment from 'moment';
+const plugin = new Logestic().use(['method', 'path']).format({
+  onSuccess({ method, path, query }: any) {
+    return `${method} ${query} was called and handled without server error.`;
+  },
+  onFailure({ request, error, code }) {
+    return `Oops, ${error} was thrown with code: ${code}`;
+  }
+});
 const app = new Elysia({})
   //Server State
   .state('maintenanceMode', config.maintenanceMode === 'true' || false)
@@ -23,7 +31,6 @@ const app = new Elysia({})
   /* EXTENSION */
 
   // Fancy logs
-  .use(Logestic.preset('fancy'))
 
   //Swagger
   .use(
@@ -87,7 +94,7 @@ const app = new Elysia({})
     jwt({
       name: 'elysia_jwt',
       secret: config.jwt.secret!,
-      exp: `${config.jwt.resetPasswordExpirationMinutes}d`
+      exp: moment().add(config.jwt.accessExpirationMinutes, 'minutes').unix()
     })
   )
 
@@ -108,6 +115,7 @@ const app = new Elysia({})
   .onError(({ code, error, set }: any) => ErrorMessages(code, error, set)) // General Error catching system
   .mapResponse(customResponse)
   .onStop(gracefulShutdown)
+  .use(Logestic.preset('common'))
 
   //Routes
   .use(router);

@@ -1,5 +1,7 @@
 // src/utils/ApiError.ts
 
+import config from '../config/config';
+
 export default class ApiError extends Error {
   public statusCode: number;
   public isOperational: boolean;
@@ -14,7 +16,7 @@ export default class ApiError extends Error {
     super(message);
     this.statusCode = statusCode;
     this.isOperational = isOperational;
-    if (stack) {
+    if (stack && config.env === 'development') {
       this.stack = stack;
     } else {
       Error.captureStackTrace(this, this.constructor);

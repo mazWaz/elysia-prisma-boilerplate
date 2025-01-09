@@ -14,6 +14,9 @@ model User {
   username  String        @unique
   password  String
   role      Role          @default(USER)
+  isEmailVerified Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
   addresses UserAddress[] @relation("UserAddresses")
   car       UserCar[]     @relation("UsersCarfk")
 }
@@ -28,6 +31,8 @@ model UserAddress {
   province String
   userId   Int
   user     User   @relation("UserAddresses", fields: [userId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Cars {
@@ -38,6 +43,8 @@ model Cars {
   plate_number String    @unique
   status       String
   user_car     UserCar[] @relation("UserCarsfk")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model UserCar {
@@ -47,6 +54,8 @@ model UserCar {
   user     User       @relation("UsersCarfk", fields: [userId], references: [id])
   car      Cars       @relation("UserCarsfk", fields: [carId], references: [id])
   location Location[] @relation("UserCarLocationfk")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Location {
@@ -54,10 +63,19 @@ model Location {
   location   String
   user_carId Int
   userCar    UserCar @relation("UserCarLocationfk", fields: [user_carId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 enum Role {
   USER
   ADMIN
   SUPERADMIN
+}
+
+enum TokenType {
+  ACCESS
+  REFRESH
+  RESET_PASSWORD
+  VERIFY_EMAIL
 }

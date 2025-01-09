@@ -6,15 +6,16 @@ async function requestLogger({ request, code, set, user }: any) {
     let coloredMethod;
     switch (request.method) {
       case 'GET':
-        coloredMethod = chalk.green(request.method);
+        coloredMethod = chalk.bgGreen(request.method);
         break;
       case 'DELETE':
-        coloredMethod = chalk.red(request.method);
+        coloredMethod = chalk.bgRed(request.method);
         break;
       default:
-        coloredMethod = chalk.yellowBright(request.method);
+        coloredMethod = chalk.bgYellow(request.method);
         break;
     }
+    console.log('code', request);
     console.info(
       coloredMethod,
       chalk.yellow('--'),

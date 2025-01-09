@@ -1,4 +1,5 @@
 import Elysia from 'elysia';
+import config from '../config/config';
 
 const customResponse = ({ error, response, set }: { error: any; response: any; set: any }): any => {
   if (typeof set !== 'object' || set === null) {
@@ -21,7 +22,7 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
   if (isResponseFile(response)) {
     return response;
   }
-
+  console.log(error.message);
   // Global vars to capture response data
   let msg: string | null = null;
   let err: string | null = null;
@@ -32,17 +33,21 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
   let pge: number | null = null;
   let nte: string | null = null;
   // Capture "message"  and "data" data from response
-  msg = response?.message ?? response?.response ?? null;
-  err = response?.error ?? (error || error?.code ? error.code : error) ?? null;
+  msg = response?.message || response?.response || undefined;
+  err =
+    response?.error ||
+    error?.code ||
+    (config.env === 'development' && error) ||
+    error?.message ||
+    null;
   dta = response?.data ?? null;
-  cde = response?.code ?? set.status;
+  cde = error.statusCode || response?.code || set.status;
   ttl = response?.total;
   cnt = response?.count;
   pge = response?.page;
-  nte = response?.note;
+  nte = response?.note ?? null;
 
   set.status = response?.code ?? set.status;
-
   const responseObject: any = {
     data: dta,
     page: pge,
@@ -50,7 +55,7 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
     total: ttl,
     success: [200, 201, 202].includes(cde),
     code: cde,
-    message: msg ?? (response instanceof Object ? null : String(response)),
+    message: msg ?? (response instanceof Object ? undefined : String(response)),
     error: err ?? nte ?? null
   };
   return responseObject;

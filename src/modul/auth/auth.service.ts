@@ -27,10 +27,9 @@ export class AuthService {
     let user: Promise<Omit<User, 'password'>>;
 
     if (username) {
-      user = this.loginWithUsernameAndPassword(username, password);
-    } else if (email) {
-      user = this.loginWithEmailAndPassword(email, password);
+      return this.loginWithUsernameAndPassword(username, password);
     }
+    return this.loginWithEmailAndPassword(email, password);
   }
 
   async loginWithUsernameAndPassword(
@@ -77,6 +76,7 @@ export class AuthService {
       'isEmailVerified',
       'createdAt',
       'updatedAt'
+      
     ]);
     if (!user) {
       throw new ApiError(HttpStatusEnum.HTTP_401_UNAUTHORIZED, 'Invalid User credentials');

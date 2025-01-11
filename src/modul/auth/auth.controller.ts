@@ -7,6 +7,7 @@ import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { UsersService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
+import exclude from '../../utils/exclude';
 
 export class AuthController {
   private usersService: UsersService;
@@ -52,11 +53,7 @@ export class AuthController {
     }
   );
 
-  // root(): string {
-  //   throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Error Test');
-  // }
-
-  login = catchAsync(async ({ set, request: { headers }, body, elysia_jwt }: any) => {
+  login = catchAsync(async ({ body, elysia_jwt }: any) => {
     const { email, username, password, rememberme } = body;
 
     const user = await this.authService.login(email, username, password, rememberme);
@@ -66,6 +63,48 @@ export class AuthController {
       data: { user, tokens },
       message: 'Successfully logged in',
       note: ''
+    };
+  });
+
+  signup = catchAsync(async ({ set, body }: any) => {
+    const { email, username, password } = body;
+    const user = await this.authService.createUser(email, username, password);
+    const data = exclude(user, ['password', 'createdAt', 'updatedAt']);
+
+    set.status = HttpStatusEnum.HTTP_201_CREATED;
+    return {
+      data,
+      message: 'Successfully Created'
+    };
+  });
+
+  signUpByadmin = catchAsync(async ({ set, body }: any) => {
+    const { email, username, password, role } = body;
+    const user = await this.authService.createUser(email, username, password, role, true);
+    const data = exclude(user, ['password', 'createdAt', 'updatedAt']);
+
+    set.status = HttpStatusEnum.HTTP_201_CREATED;
+    return {
+      data,
+      message: 'Successfully Created'
+    };
+  });
+
+  signupByAdmin = catchAsync(async ({ set, body }: any) => {
+    const { email, username, password, role, isEmailVerified } = body;
+
+    const data = await this.authService.createUser(
+      email,
+      username,
+      password,
+      role,
+      isEmailVerified
+    );
+
+    set.status = HttpStatusEnum.HTTP_201_CREATED;
+    return {
+      data,
+      message: 'Successfully Created'
     };
   });
 }

@@ -16,12 +16,11 @@ export class UsersService {
     return UsersService.instance;
   }
   async getUserByid<Key extends keyof User>(
-    id: number,
+    id: string,
     keys: Key[] = [
       'id',
       'email',
       'username',
-      'name',
       'addresses',
       'role',
       'isEmailVerified',
@@ -41,7 +40,6 @@ export class UsersService {
       'id',
       'email',
       'username',
-      'name',
       'addresses',
       'role',
       'isEmailVerified',
@@ -61,7 +59,6 @@ export class UsersService {
       'id',
       'email',
       'username',
-      'name',
       'addresses',
       'role',
       'isEmailVerified',
@@ -96,9 +93,9 @@ export class UsersService {
   }
 
   async updateUser<Key extends keyof User>(
-    userId: number,
+    userId: string,
     updateBody: Prisma.UserUpdateInput,
-    keys: Key[] = ['id', 'email', 'name', 'role'] as Key[]
+    keys: Key[] = ['id', 'email', 'username', 'role'] as Key[]
   ): Promise<Pick<User, Key> | null> {
     const user = await this.getUserByid(userId, ['id', 'email', 'username']);
 
@@ -125,9 +122,9 @@ export class UsersService {
   }
 
   async updateUserRole<Key extends keyof User>(
-    userId: number,
+    userId: string,
     role: Role,
-    keys: Key[] = ['id', 'email', 'name', 'role'] as Key[]
+    keys: Key[] = ['id', 'email', 'username', 'role'] as Key[]
   ): Promise<Pick<User, Key> | null> {
     const user = await this.getUserByid(userId);
     if (!user) {
@@ -145,7 +142,7 @@ export class UsersService {
     return updatedUserRole as Pick<User, Key> | null;
   }
 
-  async deleteUserById(userId: number): Promise<User> {
+  async deleteUserById(userId: string): Promise<User> {
     const user = await this.getUserByid(userId);
     if (!user) {
       throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Username already taken');

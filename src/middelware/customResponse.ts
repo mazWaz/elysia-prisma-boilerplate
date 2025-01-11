@@ -1,5 +1,6 @@
 import Elysia from 'elysia';
 import config from '../config/config';
+import { Logestic } from 'logestic';
 
 const customResponse = ({ error, response, set }: { error: any; response: any; set: any }): any => {
   if (typeof set !== 'object' || set === null) {
@@ -22,7 +23,6 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
   if (isResponseFile(response)) {
     return response;
   }
-  console.log(error.message);
   // Global vars to capture response data
   let msg: string | null = null;
   let err: string | null = null;
@@ -33,12 +33,12 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
   let pge: number | null = null;
   let nte: string | null = null;
   // Capture "message"  and "data" data from response
-  msg = response?.message || response?.response || undefined;
+  msg = response?.message || response?.response || null;
   err =
     response?.error ||
+    error?.message ||
     error?.code ||
     (config.env === 'development' && error) ||
-    error?.message ||
     null;
   dta = response?.data ?? null;
   cde = error.statusCode || response?.code || set.status;
@@ -47,7 +47,7 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
   pge = response?.page;
   nte = response?.note ?? null;
 
-  set.status = response?.code ?? set.status;
+  set.status = (error.statusCode || response?.code) ?? set.status;
   const responseObject: any = {
     data: dta,
     page: pge,
@@ -55,9 +55,10 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
     total: ttl,
     success: [200, 201, 202].includes(cde),
     code: cde,
-    message: msg ?? (response instanceof Object ? undefined : String(response)),
+    message: msg ?? (response instanceof Object ? null : String(response)),
     error: err ?? nte ?? null
   };
+  config.env === 'development' && console.log(error.message);
   return responseObject;
 };
 

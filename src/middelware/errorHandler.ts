@@ -85,6 +85,7 @@ function handleNoAccessError(error: CustomError, set: any) {
 }
 
 export function ErrorMessages(code: string, error: Error | CustomError, set: any) {
+  console.log('err');
   switch (error.name) {
     case 'PrismaClientInitializationError':
       return handleDatabaseInitError(error as CustomError, set);

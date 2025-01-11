@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { UsersService } from '../user/user.service';
 import exclude from '../../utils/exclude';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
@@ -6,6 +6,7 @@ import ApiError from '../../utils/apiError';
 import { AuthTokensResponse } from './auth.interface';
 import moment from 'moment';
 import config from '../../config/config';
+import { db } from '../../config/prisma';
 
 export class AuthService {
   private static instance: AuthService;
@@ -30,6 +31,37 @@ export class AuthService {
       return this.loginWithUsernameAndPassword(username, password);
     }
     return this.loginWithEmailAndPassword(email, password);
+  }
+
+  async createUser(
+    email: string,
+    username: string,
+    password: string,
+    role: Role = Role.USER,
+    isEmailVerified = false
+  ): Promise<User> {
+    if (await this.usersService.getUserByEmail(email)) {
+      throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Email already taken');
+    }
+
+    if (await this.usersService.getUserByUsername(username)) {
+      throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Username already taken');
+    }
+    const hashedPassword = await Bun.password.hash(password, {
+      algorithm: 'argon2id',
+      memoryCost: 5,
+      timeCost: 5 // the number of iterations
+    });
+
+    return db.user.create({
+      data: {
+        email,
+        username,
+        role,
+        password: hashedPassword,
+        isEmailVerified
+      }
+    });
   }
 
   async loginWithUsernameAndPassword(
@@ -76,7 +108,6 @@ export class AuthService {
       'isEmailVerified',
       'createdAt',
       'updatedAt'
-      
     ]);
     if (!user) {
       throw new ApiError(HttpStatusEnum.HTTP_401_UNAUTHORIZED, 'Invalid User credentials');

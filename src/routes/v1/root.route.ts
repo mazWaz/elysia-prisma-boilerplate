@@ -6,7 +6,7 @@ import { checkAuth } from '../../middelware/authCheck';
 const root = new RootController();
 
 export const rootRoute = new Elysia({
-  detail: { description: 'Root endpoints', tags: ['Root'] }
+  detail: { description: 'Root endpoints', tags: ['1.Root'] }
 })
   .onBeforeHandle([checkAuth])
   .get('/init', root.init, {

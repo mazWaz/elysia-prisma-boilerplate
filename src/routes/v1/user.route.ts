@@ -8,7 +8,7 @@ const user = new UserController();
 
 export const userRoute = new Elysia({
   prefix: '/user',
-  detail: { description: 'User endpoints', tags: ['User'] }
+  detail: { description: 'User endpoints', tags: ['3.User'] }
 })
   .onBeforeHandle([checkAuth])
 

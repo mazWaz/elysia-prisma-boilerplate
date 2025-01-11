@@ -1,0 +1,8 @@
+model Location {
+  id                    Int             @id @default(autoincrement())
+  location              String
+  user_carId            Int
+  userCar               UserCar         @relation("UserCarLocationfk", fields: [user_carId], references: [id])
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+}

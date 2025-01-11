@@ -16,7 +16,7 @@
     "bcryptjs": "^2.4.3",
     "chalk": "^5.4.1",
     "dotenv": "^16.4.7",
-    "elysia": "latest",
+    "elysia": "^1.2.10",
     "elysia-helmet": "^2.0.0",
     "elysia-ip": "^1.0.8",
     "elysia-rate-limit": "^4.1.0",
@@ -33,7 +33,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.4.2",
-    "prisma": "^6.1.0"
+    "prisma": "^6.2.1"
   },
   "module": "src/index.js"
 }

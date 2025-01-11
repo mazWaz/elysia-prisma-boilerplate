@@ -19,7 +19,7 @@ const plugin = new Logestic().use(['method', 'path']).format({
   onSuccess({ method, path, query }: any) {
     return `${method} ${query} was called and handled without server error.`;
   },
-  onFailure({ request, error, code }) {
+  onFailure({ error, code }) {
     return `Oops, ${error} was thrown with code: ${code}`;
   }
 });
@@ -115,7 +115,7 @@ const app = new Elysia({})
   .onError(({ code, error, set }: any) => ErrorMessages(code, error, set)) // General Error catching system
   .mapResponse(customResponse)
   .onStop(gracefulShutdown)
-  .use(Logestic.preset('common'))
+  .use(Logestic.preset('fancy'))
 
   //Routes
   .use(router);

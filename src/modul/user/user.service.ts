@@ -66,6 +66,7 @@ export class UsersService {
       'updatedAt'
     ] as Key[]
   ): Promise<Pick<User, Key> | null> {
+    console.log(username);
     return db.user.findUnique({
       where: { username },
       select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})

@@ -15,18 +15,12 @@ import { bootLogger, gracefulShutdown } from './utils/systemLogger';
 import { rateLimit } from 'elysia-rate-limit';
 import bearer from '@elysiajs/bearer';
 import moment from 'moment';
-const plugin = new Logestic().use(['method', 'path']).format({
-  onSuccess({ method, path, query }: any) {
-    return `${method} ${query} was called and handled without server error.`;
-  },
-  onFailure({ error, code }) {
-    return `Oops, ${error} was thrown with code: ${code}`;
-  }
-});
+
 const app = new Elysia({})
   //Server State
   .state('maintenanceMode', config.maintenanceMode === 'true' || false)
   .state('timezone', String(Bun.env.TZ || 'Asia/Jakarta'))
+  .onError(({ code, error, set }: any) => ErrorMessages(code, error, set)) // General Error catching system
 
   /* EXTENSION */
 
@@ -112,14 +106,12 @@ const app = new Elysia({})
   //Life Cycle
   .derive(sessionDerive)
   .onBeforeHandle([checkMaintenanceMode])
-  .onError(({ code, error, set }: any) => ErrorMessages(code, error, set)) // General Error catching system
   .mapResponse(customResponse)
   .onStop(gracefulShutdown)
   .use(Logestic.preset('fancy'))
 
   //Routes
   .use(router);
-
 app.listen(config.port, bootLogger);
 
 console.log(`🦊 Elysia is running at http://${config.host}:${config.port}`);

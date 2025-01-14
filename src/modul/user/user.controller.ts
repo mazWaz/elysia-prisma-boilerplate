@@ -5,9 +5,6 @@ import { UsersService } from './user.service';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { catchAsync } from '../../utils/catchAsync';
 import { prismaSearch, SearchOptions } from '../../config/prisma';
-import { query } from 'winston';
-import ApiError from '../../utils/apiError';
-import { User } from '@prisma/client';
 
 export class UserController {
   private userSvc: UsersService;

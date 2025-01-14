@@ -17,4 +17,6 @@ enum Role {
   USER
   ADMIN
   SUPERADMIN
+  SUPERVISOR
+  SUPPORT
 }

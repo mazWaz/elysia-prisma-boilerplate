@@ -25,13 +25,13 @@ export class TokenService {
    * @param {string} [secret]
    * @returns {string}
    */
-  generateToken(
+  async generateToken(
     user: User,
     expires: Moment,
     type: TokenType,
     elysiaJwt: any,
     secret: string = config.jwt.secret
-  ): string {
+  ): Promise<string> {
     const payload = {
       sub: user.id,
       name: user.username,
@@ -50,20 +50,21 @@ export class TokenService {
     );
   }
 
-  // async saveToken(
-  //   token: string,
-  //   userId: number,
-  //   expires: Moment,
-  //   type: TokenType,
-  //   blacklisted: boolean = false
-  // ) {
-  //   return db.token.create({
-  //     data: { token, userId: userId, expires: expires.toDate(), type, blacklisted }
-  //   });
-  // }
+  async saveToken(
+    token: string,
+    userId: string,
+    expires: Moment,
+    type: TokenType,
+    blacklisted: boolean = false
+  ) {
+    return db.token.create({
+      data: { token, userId: userId, expires: expires.toDate(), type, blacklisted }
+    });
+  }
 
-  async verifyToken(token: string, type: TokenType, user: any): Promise<Token> {
-    const userId = Number(user.sub);
+  async verifyToken(token: string, type: TokenType, elysia_jwt: any): Promise<Token> {
+    const payload = elysia_jwt.verify(token);
+    const userId = payload.sub;
 
     const tokenData = await db.token.findFirst({
       where: { token, type, userId, blacklisted: false }
@@ -76,7 +77,7 @@ export class TokenService {
 
   async generateAuthTokens(user: User, elysia_jwt: any): Promise<AuthTokensResponse> {
     const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
-    const accessToken = this.generateToken(
+    const accessToken = await this.generateToken(
       user,
       accessTokenExpires,
       TokenType.ACCESS,
@@ -85,13 +86,15 @@ export class TokenService {
     );
 
     const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
-    const refreshToken = this.generateToken(
+    const refreshToken = await this.generateToken(
       user,
       refreshTokenExpires,
       TokenType.REFRESH,
       elysia_jwt,
       undefined
     );
+
+    await this.saveToken(refreshToken, user.id, refreshTokenExpires, TokenType.REFRESH);
 
     return {
       access: {

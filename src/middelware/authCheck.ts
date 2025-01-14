@@ -8,8 +8,9 @@ export const checkAuth = async ({ bearer, elysia_jwt, error }: any) => {
     return error(401, 'Unauthorized. Access token not present');
   }
 
-  const tokenUser = await elysia_jwt.verify(bearer);
-  if (!tokenUser) {
+  const payload = await elysia_jwt.verify(bearer);
+
+  if (!payload) {
     return error(401, 'Unauthorized. Access token not verified');
   }
 };

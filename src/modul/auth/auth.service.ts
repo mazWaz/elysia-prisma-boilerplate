@@ -1,5 +1,6 @@
-import { Role, User } from '@prisma/client';
-import { UsersService } from '../user/user.service';
+import { UsersService } from './../user/user.service';
+import { TokenService } from './token.service';
+import { Role, TokenType, User } from '@prisma/client';
 import exclude from '../../utils/exclude';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import ApiError from '../../utils/apiError';
@@ -11,9 +12,11 @@ import { db } from '../../config/prisma';
 export class AuthService {
   private static instance: AuthService;
   private usersService: UsersService;
+  private tokenService: TokenService;
 
   constructor() {
     this.usersService = UsersService.getInstace();
+    this.tokenService = TokenService.getInstance();
   }
 
   public static getInstance(): AuthService {
@@ -24,42 +27,49 @@ export class AuthService {
     return AuthService.instance;
   }
 
-  async login(username: string, email: string, password: string, rememberMe: boolean) {
-    let user: Promise<Omit<User, 'password'>>;
-
+  async login(email: string, username: string, password: string, rememberMe: boolean) {
     if (username) {
       return this.loginWithUsernameAndPassword(username, password);
     }
     return this.loginWithEmailAndPassword(email, password);
   }
 
-  async createUser(
-    email: string,
-    username: string,
-    password: string,
-    role: Role = Role.USER,
-    isEmailVerified = false
-  ): Promise<User> {
-    if (await this.usersService.getUserByEmail(email)) {
-      throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Email already taken');
-    }
+  async refreshAuth(refreshToken: string, elysia_jwt: any): Promise<AuthTokensResponse> {
+    try {
+      const refreshTokenData = await this.tokenService.verifyToken(
+        refreshToken,
+        TokenType.REFRESH,
+        elysia_jwt
+      );
+      const { userId } = refreshTokenData;
+      const user = await this.usersService.getUserByid(userId);
 
-    if (await this.usersService.getUserByUsername(username)) {
-      throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Username already taken');
+      await db.token.update({
+        where: { id: refreshTokenData.id },
+        data: { blacklisted: true }
+      });
+
+      return this.tokenService.generateAuthTokens(user as User, elysia_jwt);
+    } catch (error) {
+      throw new ApiError(HttpStatusEnum.HTTP_401_UNAUTHORIZED, 'Please authenticate');
     }
-    const hashedPassword = await Bun.password.hash(password, {
-      algorithm: 'argon2id',
-      memoryCost: 5,
-      timeCost: 5 // the number of iterations
+  }
+
+  async logout(refreshToken: string): Promise<void> {
+    const refreshTokenData = await db.token.findFirst({
+      where: {
+        token: refreshToken,
+        type: TokenType.REFRESH,
+        blacklisted: false
+      }
     });
 
-    return db.user.create({
-      data: {
-        email,
-        username,
-        role,
-        password: hashedPassword,
-        isEmailVerified
+    if (!refreshTokenData) {
+      throw new ApiError(HttpStatusEnum.HTTP_404_NOT_FOUND, 'Not Found');
+    }
+    await db.token.delete({
+      where: {
+        id: refreshTokenData.id
       }
     });
   }
@@ -82,7 +92,6 @@ export class AuthService {
       throw new ApiError(HttpStatusEnum.HTTP_401_UNAUTHORIZED, 'Invalid User credentials');
     }
 
-    //TODO: Add Active User in prisma
     if (user.isEmailVerified === false || !user.isEmailVerified) {
       throw new ApiError(HttpStatusEnum.HTTP_403_FORBIDDEN, 'User access is revoked');
     }
@@ -113,7 +122,6 @@ export class AuthService {
       throw new ApiError(HttpStatusEnum.HTTP_401_UNAUTHORIZED, 'Invalid User credentials');
     }
 
-    //TODO: Add Active User in prisma
     if (user.isEmailVerified === false || !user.isEmailVerified) {
       throw new ApiError(HttpStatusEnum.HTTP_403_FORBIDDEN, 'User access is revoked');
     }

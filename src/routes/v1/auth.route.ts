@@ -7,7 +7,10 @@ import {
   LoginUserBody,
   LoginUserResponse,
   SignupUserBody,
-  SignupResponse
+  SignupResponse,
+  logoutFrfreshTokenBody,
+  logoutResponse,
+  refreshTokenResponse
 } from '../../modul/auth/auth.validate';
 
 const authController = new AuthController();
@@ -19,12 +22,6 @@ export const authRoute = new Elysia({
   // .get('/', authController.root, {
   //   detail: swaggerDetails('Hello World')
   // })
-  .post('/login', authController.login, {
-    detail: swaggerDetails('Login'),
-    body: LoginUserBody,
-    response: LoginUserResponse
-  })
-
   .post('/signup', authController.signup, {
     detail: swaggerDetails('Signup User'),
     body: SignupUserBody,
@@ -34,4 +31,21 @@ export const authRoute = new Elysia({
     detail: swaggerDetails('Signup User Admin'),
     body: SignupUserBody,
     response: SignupResponse
+  })
+  .post('/login', authController.login, {
+    detail: swaggerDetails('Login'),
+    body: LoginUserBody,
+    response: LoginUserResponse
+  })
+  .post('logout', authController.logout, {
+    detail: swaggerDetails('Logout User'),
+    body: logoutFrfreshTokenBody,
+    response: logoutResponse
+  })
+  .post('refresh-token', authController.refreshToken, {
+    detail: swaggerDetails('Refresh Token'),
+    body: logoutFrfreshTokenBody,
+    response: refreshTokenResponse
   });
+
+// .post('refresh-tokens');

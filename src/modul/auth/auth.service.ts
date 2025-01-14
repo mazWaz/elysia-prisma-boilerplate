@@ -88,6 +88,7 @@ export class AuthService {
       'createdAt',
       'updatedAt'
     ]);
+
     if (!user) {
       throw new ApiError(HttpStatusEnum.HTTP_401_UNAUTHORIZED, 'Invalid User credentials');
     }

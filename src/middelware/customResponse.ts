@@ -1,11 +1,23 @@
 import Elysia from 'elysia';
 import config from '../config/config';
 import { Logestic } from 'logestic';
+import { ErrorMessages } from './errorHandler';
 
-const customResponse = ({ error, response, set }: { error: any; response: any; set: any }): any => {
+const customResponse = ({
+  code,
+  error,
+  response,
+  set
+}: {
+  code: any;
+  error: any;
+  response: any;
+  set: any;
+}): any => {
   if (typeof set !== 'object' || set === null) {
     throw new Error('Invalid set object');
   }
+  config.env === 'development' && console.log(error);
 
   // Function to check if the response is a file
   const isResponseFile = (r: any) => {
@@ -33,13 +45,8 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
   let pge: number | null = null;
   let nte: string | null = null;
   // Capture "message"  and "data" data from response
-  msg = response?.message || response?.response || null;
-  err =
-    response?.error ||
-    error?.message ||
-    error?.code ||
-    (config.env === 'development' && error) ||
-    null;
+  msg = response?.message || response?.response || error?.message || null;
+  err = response?.error || error?.code || (config.env === 'development' && error) || null;
   dta = response?.data ?? null;
   cde = error.statusCode || response?.code || set.status;
   ttl = response?.total;
@@ -58,7 +65,7 @@ const customResponse = ({ error, response, set }: { error: any; response: any; s
     message: msg ?? (response instanceof Object ? null : String(response)),
     error: err ?? nte ?? null
   };
-  config.env === 'development' && console.log(error.message);
+
   return responseObject;
 };
 

@@ -1,6 +1,5 @@
 import { Role } from '@prisma/client';
 import { t } from 'elysia';
-const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
 
 export const LoginUserBody = t.Object({
   email: t.Optional(

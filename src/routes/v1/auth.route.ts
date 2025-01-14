@@ -1,6 +1,5 @@
 import Elysia, { t } from 'elysia';
-import { UserController } from '../../modul/user/user.controller';
-import { LoginUserDTO } from '../../modul/auth/auth.validation';
+
 import { AuthController } from '../../modul/auth/auth.controller';
 import { swaggerDetails } from '../../utils/responseHelper';
 import {

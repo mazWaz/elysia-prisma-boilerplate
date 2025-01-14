@@ -15,16 +15,10 @@ export class TokenService {
     if (!TokenService.instance) {
       TokenService.instance = new TokenService();
     }
+
     return TokenService.instance;
   }
-  /**
-   * Generate token
-   * @param user
-   * @param {Moment} expires
-   * @param {string} type
-   * @param {string} [secret]
-   * @returns {string}
-   */
+
   async generateToken(
     user: User,
     expires: Moment,
@@ -42,7 +36,8 @@ export class TokenService {
       exp: expires.unix(),
       type
     };
-    return elysiaJwt.sign(
+
+    return await elysiaJwt.sign(
       {
         payload
       },
@@ -62,9 +57,8 @@ export class TokenService {
     });
   }
 
-  async verifyToken(token: string, type: TokenType, elysia_jwt: any): Promise<Token> {
-    const payload = elysia_jwt.verify(token);
-    const userId = payload.sub;
+  async verifyToken(token: string, type: TokenType, user: any): Promise<Token> {
+    const userId = Number(user.sub);
 
     const tokenData = await db.token.findFirst({
       where: { token, type, userId, blacklisted: false }
@@ -72,6 +66,7 @@ export class TokenService {
     if (!tokenData) {
       throw new ApiError(HttpStatusEnum.HTTP_404_NOT_FOUND, 'Token Not Found');
     }
+
     return tokenData;
   }
 

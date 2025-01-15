@@ -1,6 +1,7 @@
 import Elysia, { t } from 'elysia';
 import { UserController } from '../../modul/user/user.controller';
 import {
+  auth,
   checkAuth,
   checkIsAdmin,
   checkIsStaff,
@@ -8,6 +9,7 @@ import {
 } from '../../middelware/authCheck';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { swaggerDetails } from '../../utils/responseHelper';
+import { userRole } from '../../config/role';
 
 const user = new UserController();
 
@@ -18,9 +20,10 @@ export const userRoute = new Elysia({
   .onBeforeHandle([checkAuth])
 
   .get('/', user.getAllUser, {
-    beforeHandle: [checkIsAdmin, checkIsSuperAdmin, checkIsStaff]
+    beforeHandle: auth(userRole.GET_PROFILE),
+    detail: swaggerDetails('Get All user', true)
   })
   .get('/user', 'hello User')
   .get('/test', user.testUser, {
-    detail: swaggerDetails('Initialize App', 'Returns data beneficial to initialization')
+    detail: swaggerDetails('Initialize App')
   });

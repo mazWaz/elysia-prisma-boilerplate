@@ -2,6 +2,7 @@ import { bearer } from '@elysiajs/bearer';
 import config from '../config/config';
 import { HttpStatusEnum } from '../utils/httpStatusCode';
 import { Role } from '@prisma/client';
+import { roleRights, userRole } from '../config/role';
 
 export const checkAuth = async ({ bearer, elysia_jwt, error }: any) => {
   if (!bearer) {
@@ -54,10 +55,25 @@ export const checkIsStaff = async ({ set, user, error }: any) => {
 };
 export const checkIsUser = async ({ set, user, error }: any) => {
   const roles = user?.roles;
-  1;
 
   if (!roles.some((role: any) => [Role.USER].includes(role))) {
-    // set.status = HttpStatusEnum.HTTP_403_FORBIDDEN;
     return error(403, 'Access denied. Insufficient privileges');
   }
 };
+
+export const auth =
+  (...requiredRights: userRole[]) =>
+  async ({ user, error }: any) => {
+    if (requiredRights.length) {
+      const userRights = roleRights.get(user.roles) ?? [];
+
+      const hasRequiredRights = requiredRights.every((requiredRight) =>
+        userRights.includes(requiredRight)
+      );
+      console.log(hasRequiredRights);
+
+      if (!hasRequiredRights) {
+        return error(403, 'Access denied. Insufficient privileges');
+      }
+    }
+  };

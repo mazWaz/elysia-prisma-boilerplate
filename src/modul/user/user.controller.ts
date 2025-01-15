@@ -26,7 +26,8 @@ export class UserController {
       limit,
       sortBy: { field: sortBy ?? 'createdAt', order: sortOrder },
       search: { field: searchField ?? 'lastname', value: search },
-      include: { profile, isActive }
+
+      include: { password: false, addresses: true }
     };
 
     const users = await prismaSearch('user', searchOptions);

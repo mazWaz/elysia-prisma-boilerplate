@@ -37,10 +37,18 @@ const app = new Elysia({})
           version: `${config.server.version}`,
           description: `Server API for ${config.server.name}`
         },
-        tags: [
-          { name: 'App', description: 'General endpoints' },
-          { name: 'Auth', description: 'Authentication endpoints' }
-        ]
+        components: {
+          securitySchemes: {
+            JwtAuth: {
+              type: 'http',
+              scheme: 'bearer',
+              bearerFormat: 'JWT'
+            }
+          }
+        }
+      },
+      swaggerOptions: {
+        persistAuthorization: true
       }
     })
   )

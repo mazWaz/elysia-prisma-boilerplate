@@ -1,13 +1,13 @@
 model UserAddress {
-  id                    Int             @id @default(autoincrement())
+  id                    String          @id @default(ulid())
   address               String
   rt                    Int
   rw                    Int
   district              String
   city                  String
   province              String
-  userId                String          @db.Uuid
-  user                  User            @relation("UserAddresses", fields: [userId], references: [id])
+  userId                String          @unique @default(ulid()) 
+  user                  User?           @relation("UserAddresses", fields: [userId], references: [id])
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
 }

@@ -3,7 +3,6 @@ import ApiError from '../../utils/apiError';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { db } from '../../config/prisma';
 import { Prisma, Role, User } from '@prisma/client';
-import { encryptPassword } from '../../utils/encryption';
 
 export class UsersService {
   private static instance: UsersService;
@@ -66,7 +65,6 @@ export class UsersService {
       'updatedAt'
     ] as Key[]
   ): Promise<Pick<User, Key> | null> {
-    console.log(username);
     return db.user.findUnique({
       where: { username },
       select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})

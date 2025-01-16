@@ -28,7 +28,6 @@ export const checkEmailVerified = async ({ set, user, error }: any) => {
 
 export const checkIsSuperAdmin = async ({ set, user, error }: any) => {
   const roles = user?.roles;
-  1;
 
   if (!roles.some((role: any) => [Role.SUPERADMIN].includes(role))) {
     // set.status = HttpStatusEnum.HTTP_403_FORBIDDEN;
@@ -38,7 +37,6 @@ export const checkIsSuperAdmin = async ({ set, user, error }: any) => {
 
 export const checkIsAdmin = async ({ set, user, error }: any) => {
   const roles = user?.roles;
-
   if (!roles.some((role: any) => [Role.ADMIN].includes(role))) {
     // set.status = HttpStatusEnum.HTTP_403_FORBIDDEN;
     return error(403, 'Access denied. Insufficient privileges');
@@ -66,11 +64,9 @@ export const auth =
   async ({ user, error }: any) => {
     if (requiredRights.length) {
       const userRights = roleRights.get(user.roles) ?? [];
-
       const hasRequiredRights = requiredRights.every((requiredRight) =>
         userRights.includes(requiredRight)
       );
-      console.log(hasRequiredRights);
 
       if (!hasRequiredRights) {
         return error(403, 'Access denied. Insufficient privileges');

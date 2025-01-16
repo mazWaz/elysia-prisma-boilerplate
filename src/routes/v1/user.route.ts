@@ -10,6 +10,8 @@ import {
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { swaggerDetails } from '../../utils/responseHelper';
 import { userRole } from '../../config/role';
+import { paginationOptions } from '../../config/prisma';
+import { userQueriesDTO } from '../../modul/user/user.validate';
 
 const user = new UserController();
 
@@ -20,7 +22,11 @@ export const userRoute = new Elysia({
   .onBeforeHandle([checkAuth])
 
   .get('/', user.getAllUser, {
-    beforeHandle: auth(userRole.GET_PROFILE),
+    beforeHandle: auth(userRole.USER),
+    query: t.Object({
+      ...paginationOptions,
+      ...userQueriesDTO
+    }),
     detail: swaggerDetails('Get All user', true)
   })
   .get('/user', 'hello User')

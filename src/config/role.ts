@@ -1,15 +1,15 @@
 import { Role } from '@prisma/client';
 
 export enum userRole {
-  GET_USER = 'getUser',
-  MANAGE_USER = 'manageUser',
-  GET_PROFILE = 'getProfile'
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+  SUPERADMIN = 'SUPERADMIN'
 }
 
 const allRoles = {
-  [Role.USER]: [userRole.GET_PROFILE],
-  [Role.ADMIN]: [userRole.GET_USER, userRole.MANAGE_USER, userRole.GET_PROFILE],
-  [Role.SUPERADMIN]: [userRole.GET_USER, userRole.MANAGE_USER, userRole.GET_PROFILE]
+  [Role.USER]: [userRole.USER],
+  [Role.ADMIN]: [userRole.ADMIN],
+  [Role.SUPERADMIN]: [userRole.SUPERADMIN, userRole.ADMIN, userRole.USER]
 };
 
 export const roles = Object.keys(allRoles);

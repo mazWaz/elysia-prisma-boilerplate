@@ -19,14 +19,17 @@ export class UserController {
   });
 
   getAllUser = catchAsync(async ({ set, query }: any) => {
-    const { isActive, profile } = query;
+    const { isEmailVerified, profile } = query;
     const { page, limit, sortBy, sortOrder, searchField, search } = query;
-    const searchOptions = {
+    console.log('askdksajdasd', searchField !== 'role');
+    const searchOptions: SearchOptions = {
       page,
       limit,
       sortBy: { field: sortBy ?? 'createdAt', order: sortOrder },
-      search: { field: searchField ?? 'lastname', value: search },
-
+      search:
+        searchField !== 'role'
+          ? { field: searchField ?? 'username', value: search }
+          : { field: searchField ?? 'username', value: search, operator: 'equals' },
       include: { password: false, addresses: true }
     };
 

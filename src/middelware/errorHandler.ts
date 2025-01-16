@@ -119,7 +119,7 @@ export function ErrorMessages(code: any, error: any | CustomError, set: any) {
 
       return {
         code: set.status,
-        message: 'An unhandled error occurred',
+        message: error.message,
         note: error
       };
   }

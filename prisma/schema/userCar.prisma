@@ -1,9 +1,9 @@
 model UserCar {
-  id                    Int             @id @default(autoincrement())
-  carId                 Int
-  userId                String          @db.Uuid
+  id                    String          @id @default(ulid())
+  carId                 String          @unique @default(ulid()) 
+  userId                String          @unique @default(ulid()) 
   user                  User            @relation("UsersCarfk", fields: [userId], references: [id])
-  car                   Cars            @relation("UserCarsfk", fields: [carId], references: [id])
+  car                   Cars?           @relation("UserCarsfk", fields: [carId], references: [id])
   location              Location[]      @relation("UserCarLocationfk")
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt

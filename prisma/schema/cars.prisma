@@ -5,7 +5,7 @@ model Car {
   release_year          Int
   plate_number          String          @unique
   status                String
-  user_car              UserCar[]       @relation("UserCarsfk")
+  user_car              UserCar?       @relation("UserCarsfk")
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
 }

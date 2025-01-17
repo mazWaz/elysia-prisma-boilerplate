@@ -10,7 +10,7 @@ model User {
   updatedAt             DateTime        @updatedAt
   tokens                Token[]         @relation("UserTokens")
   address               UserAddress?    @relation("UserAddress")
-  car                   UserCar[]       @relation("UsersCarfk")
+  car                   UserCar?       @relation("UsersCarfk")
 }
 
 enum Role {

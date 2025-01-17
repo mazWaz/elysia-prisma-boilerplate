@@ -19,48 +19,9 @@ export class AuthController {
     this.authService = AuthService.getInstance();
     this.tokenService = TokenService.getInstance();
   }
-  root = catchAsync(
-    async ({
-      set,
-      request: { headers },
-      body,
-      elysia_jwt,
-      authMethod,
-      cookie: { lucia_auth_cookie },
-      session
-    }: any) => {
-      const jwtExpiresIn = config.jwt.accessExpirationMinutes + 'min'; // in days
-
-      const accessToken = await elysia_jwt.sign(
-        {
-          id: 1,
-          firstname: 'ABS',
-          lastname: 'ABS',
-          username: 'ABS',
-          roles: 'ABS',
-          emailVerified: 'ABS',
-          createdAt: 'ABS',
-          profileId: 'ABS',
-          iat: moment().unix()
-        },
-        { jwtExpiresIn: moment().add(config.jwt.accessExpirationMinutes, 'day').unix() }
-      );
-      return {
-        data: accessToken,
-        message: 'Successfully logged in',
-        note: ''
-      };
-    }
-  );
-
-  login = catchAsync(async ({ body, elysia_jwt }: any) => {
-    const { email, username, password, rememberme } = body;
-
-    const user = await this.authService.login(email, username, password, rememberme);
-    const tokens = await this.tokenService.generateAuthTokens(user as User, elysia_jwt);
-
+  root = catchAsync(async ({}: any) => {
     return {
-      data: { user, tokens },
+      data: 'asdwa',
       message: 'Successfully logged in',
       note: ''
     };
@@ -68,21 +29,8 @@ export class AuthController {
 
   signup = catchAsync(async ({ set, body }: any) => {
     const { email, username, password } = body;
-    const user = await this.authService.createUser(email, username, password);
+    const user = await this.usersService.createUser(email, username, password);
     const data = exclude(user, ['password', 'createdAt', 'updatedAt']);
-
-    set.status = HttpStatusEnum.HTTP_201_CREATED;
-    return {
-      data,
-      message: 'Successfully Created'
-    };
-  });
-
-  signUpByadmin = catchAsync(async ({ set, body }: any) => {
-    const { email, username, password, role } = body;
-    const user = await this.authService.createUser(email, username, password, role, true);
-    const data = exclude(user, ['password', 'createdAt', 'updatedAt']);
-
     set.status = HttpStatusEnum.HTTP_201_CREATED;
     return {
       data,
@@ -93,18 +41,38 @@ export class AuthController {
   signupByAdmin = catchAsync(async ({ set, body }: any) => {
     const { email, username, password, role, isEmailVerified } = body;
 
-    const data = await this.authService.createUser(
-      email,
-      username,
-      password,
-      role,
-      isEmailVerified
-    );
+    const data = await this.usersService.createUser(email, username, password, role);
 
     set.status = HttpStatusEnum.HTTP_201_CREATED;
     return {
       data,
       message: 'Successfully Created'
+    };
+  });
+  login = catchAsync(async ({ body, elysia_jwt }: any) => {
+    const { email, username, password, rememberme } = body;
+
+    const user = await this.authService.login(email, username, password, rememberme);
+    const tokens = await this.tokenService.generateAuthTokens(user as User, elysia_jwt);
+
+    return {
+      data: { user, tokens },
+      message: 'Successfully logged in'
+    };
+  });
+
+  logout = catchAsync(async ({ body, set }: any) => {
+    const tokens = await this.authService.logout(body.refreshToken);
+    return {
+      message: 'Successfully Logout'
+    };
+  });
+
+  refreshToken = catchAsync(async ({ body, elysia_jwt }: any) => {
+    const tokens = await this.authService.refreshAuth(body.refreshToken, elysia_jwt);
+    return {
+      data: tokens,
+      message: 'Successfully Create Refresh Token'
     };
   });
 }

@@ -3,7 +3,6 @@ import ApiError from '../../utils/apiError';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { db } from '../../config/prisma';
 import { Prisma, Role, User } from '@prisma/client';
-import { encryptPassword } from '../../utils/encryption';
 
 export class UsersService {
   private static instance: UsersService;
@@ -66,29 +65,39 @@ export class UsersService {
       'updatedAt'
     ] as Key[]
   ): Promise<Pick<User, Key> | null> {
-    console.log(username);
     return db.user.findUnique({
       where: { username },
       select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})
     }) as Promise<Pick<User, Key> | null>;
   }
 
-  async createUser(username: string, email: string, password: string, role: Role = Role.USER) {
-    const [sameUsername, sameEmail] = await Promise.all([
-      this.getUserByEmail(email),
-      this.getUserByUsername(username)
-    ]);
-
-    if (sameUsername && sameEmail) {
-      throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Email or Username already taken');
+  async createUser(
+    email: string,
+    username: string,
+    password: string,
+    role: Role = Role.USER,
+    isEmailVerified = false
+  ): Promise<User> {
+    if (await this.getUserByEmail(email)) {
+      throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Email already taken');
     }
+
+    if (await this.getUserByUsername(username)) {
+      throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Username already taken');
+    }
+    const hashedPassword = await Bun.password.hash(password, {
+      algorithm: 'argon2id',
+      memoryCost: 5,
+      timeCost: 5 // the number of iterations
+    });
 
     return db.user.create({
       data: {
-        username,
         email,
-        password: await encryptPassword(password),
-        role
+        username,
+        role,
+        password: hashedPassword,
+        isEmailVerified
       }
     });
   }

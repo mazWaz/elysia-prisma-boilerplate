@@ -5,9 +5,6 @@ import { UsersService } from './user.service';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { catchAsync } from '../../utils/catchAsync';
 import { prismaSearch, SearchOptions } from '../../config/prisma';
-import { query } from 'winston';
-import ApiError from '../../utils/apiError';
-import { User } from '@prisma/client';
 
 export class UserController {
   private userSvc: UsersService;
@@ -22,14 +19,18 @@ export class UserController {
   });
 
   getAllUser = catchAsync(async ({ set, query }: any) => {
-    const { isActive, profile } = query;
+    const { isEmailVerified, profile } = query;
     const { page, limit, sortBy, sortOrder, searchField, search } = query;
-    const searchOptions = {
+    console.log('askdksajdasd', searchField !== 'role');
+    const searchOptions: SearchOptions = {
       page,
       limit,
       sortBy: { field: sortBy ?? 'createdAt', order: sortOrder },
-      search: { field: searchField ?? 'lastname', value: search },
-      include: { profile, isActive }
+      search:
+        searchField !== 'role'
+          ? { field: searchField ?? 'username', value: search }
+          : { field: searchField ?? 'username', value: search, operator: 'equals' },
+      include: { password: false, addresses: true }
     };
 
     const users = await prismaSearch('user', searchOptions);

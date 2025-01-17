@@ -1,11 +1,11 @@
 model Token {
-  id                    Int             @id @default(autoincrement())
+  id                    String          @id @default(ulid())
   token                 String
   type                  TokenType 
   expires               DateTime      
   blacklisted           Boolean
   createdAt             DateTime        @default(now())
-  userId                String          @db.Uuid
+  userId                String         
   user                  User            @relation("UserTokens", fields: [userId], references: [id])
 }
 

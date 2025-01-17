@@ -25,19 +25,6 @@ export const LoginUserBody = t.Object({
   rememberme: t.Optional(t.Boolean())
 });
 
-export const LoginUserResponse = {
-  200: t.Object({
-    data: t.Any(),
-    message: t.String({ default: 'Successfully logged in' })
-  }),
-  400: t.Object({ message: t.String({ default: 'Authentication Error' }) }),
-  403: t.Object({ message: t.String({ default: 'User access is revoked.\nReason: ...' }) }),
-  404: t.Object({ message: t.String({ default: 'Invalid credentials' }) }),
-  406: t.Object({ message: t.String({ default: 'Invalid credentials' }) }),
-  422: t.Object({ message: t.String({ default: 'Invalid Input' }) }),
-  500: t.Object({ message: t.String({ default: 'An unknown login error occurred' }) })
-};
-
 export const SignupUserBody = t.Object({
   email: t.Optional(
     t.String({
@@ -65,12 +52,61 @@ export const SignupUserBody = t.Object({
   })
 });
 
+export const logoutFrfreshTokenBody = t.Object({
+  refreshToken: t.String({
+    example:
+      'eyJhbGciOiJIUzI1NiJ9.eyJwYXlsb2FkIjp7InN1YiI6ImQxODczZDYzLTMyMWEtNGEyZi05MWNjLTJjNjAzZGMzYjE5OSIsIm5hbWUiOiJtYXNodTMyMyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJyb2xlIjoiVVNFUiIsInBpY3R1cmUiOm51bGwsImlhdCI6MTczNjgzNTQ4MiwiZXhwIjoxNzM5NDI3NDgyLCJ0eXBlIjoiUkVGUkVTSCJ9LCJleHAiOjE3MzY4MzcyNjV9.F1AxwxzHUPWkKL7HpcURZ3j9zaCDAh4UrOpS1kE97Vw',
+    description: 'The JWT refresh token string.'
+  })
+});
+
+export const LoginUserResponse = {
+  200: t.Object({
+    data: t.Any(),
+    message: t.String({ default: 'Successfully logged in' })
+  }),
+  400: t.Object({ message: t.String({ default: 'Authentication Error' }) }),
+  403: t.Object({ message: t.String({ default: 'User access is revoked.\nReason: ...' }) }),
+  404: t.Object({ message: t.String({ default: 'Invalid credentials' }) }),
+  406: t.Object({ message: t.String({ default: 'Invalid credentials' }) }),
+  422: t.Object({ message: t.String({ default: 'Invalid Input' }) }),
+  500: t.Object({ message: t.String({ default: 'An unknown login error occurred' }) })
+};
+
 export const SignupResponse = {
   200: t.Object({
     data: t.Any(),
     message: t.String({ default: 'Successfully logged in' })
   }),
   400: t.Object({ message: t.String({ default: 'Authentication Error' }) }),
+  403: t.Object({ message: t.String({ default: 'User access is revoked.\nReason: ...' }) }),
+  404: t.Object({ message: t.String({ default: 'Invalid credentials' }) }),
+  406: t.Object({ message: t.String({ default: 'Invalid credentials' }) }),
+  422: t.Object({ message: t.String({ default: 'Invalid Input' }) }),
+  500: t.Object({ message: t.String({ default: 'An unknown login error occurred' }) })
+};
+
+export const logoutResponse = {
+  200: t.Object({
+    data: t.Any(),
+    message: t.String({ default: 'Successfully Logout' })
+  }),
+  400: t.Object({ message: t.String({ default: 'Authentication Error' }) }),
+  401: t.Object({ message: t.String({ default: 'Please authenticate' }) }),
+  403: t.Object({ message: t.String({ default: 'User access is revoked.\nReason: ...' }) }),
+  404: t.Object({ message: t.String({ default: 'Invalid credentials' }) }),
+  406: t.Object({ message: t.String({ default: 'Invalid credentials' }) }),
+  422: t.Object({ message: t.String({ default: 'Invalid Input' }) }),
+  500: t.Object({ message: t.String({ default: 'An unknown login error occurred' }) })
+};
+
+export const refreshTokenResponse = {
+  200: t.Object({
+    data: t.Any(),
+    message: t.String({ default: 'Successfully Create Refresh Token' })
+  }),
+  400: t.Object({ message: t.String({ default: 'Authentication Error' }) }),
+  401: t.Object({ message: t.String({ default: 'Please authenticate' }) }),
   403: t.Object({ message: t.String({ default: 'User access is revoked.\nReason: ...' }) }),
   404: t.Object({ message: t.String({ default: 'Invalid credentials' }) }),
   406: t.Object({ message: t.String({ default: 'Invalid credentials' }) }),

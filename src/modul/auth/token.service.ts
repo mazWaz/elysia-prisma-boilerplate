@@ -30,7 +30,7 @@ export class TokenService {
       sub: user.id,
       name: user.username,
       email_verified: user.isEmailVerified,
-      role: user.role,
+      roles: user.role,
       picture: null,
       iat: moment().unix(),
       exp: expires.unix(),
@@ -57,7 +57,9 @@ export class TokenService {
     });
   }
 
-  async verifyToken(token: string, type: TokenType, userId: string): Promise<Token> {
+  async verifyToken(token: string, type: TokenType, user: any): Promise<Token> {
+    const userId = user.sub;
+
     const tokenData = await db.token.findFirst({
       where: { token, type, userId, blacklisted: false }
     });

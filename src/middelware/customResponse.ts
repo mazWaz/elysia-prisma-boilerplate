@@ -17,7 +17,7 @@ const customResponse = ({
   if (typeof set !== 'object' || set === null) {
     throw new Error('Invalid set object');
   }
-  config.env === 'development' && console.log(error);
+  config.env === 'development' && error instanceof Error ? console.log(error) : undefined;
 
   // Function to check if the response is a file
   const isResponseFile = (r: any) => {

@@ -1,5 +1,5 @@
 model UserAddress {
-  id                    Int             @id @default(autoincrement())
+  id                    String          @id @default(ulid())
   address               String
   rt                    Int
   rw                    Int

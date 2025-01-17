@@ -3,7 +3,7 @@ model UserCar {
   carId                 Int
   userId                String          @db.Uuid
   user                  User            @relation("UsersCarfk", fields: [userId], references: [id])
-  car                   Cars            @relation("UserCarsfk", fields: [carId], references: [id])
+  car                   Car            @relation("UserCarsfk", fields: [carId], references: [id])
   location              Location[]      @relation("UserCarLocationfk")
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt

@@ -9,7 +9,7 @@ model User {
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
   tokens                Token[]         @relation("UserTokens")
-  addresses             UserAddress[]   @relation("UserAddresses")
+  address               UserAddress?    @relation("UserAddress")
   car                   UserCar[]       @relation("UsersCarfk")
 }
 

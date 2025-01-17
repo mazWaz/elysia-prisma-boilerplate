@@ -6,8 +6,8 @@ model UserAddress {
   district              String
   city                  String
   province              String
-  userId                String          @db.Uuid
-  user                  User            @relation("UserAddresses", fields: [userId], references: [id])
+  userId                String          @unique @db.Uuid
+  user                  User            @relation("UserAddress", fields: [userId], references: [id])
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
 }

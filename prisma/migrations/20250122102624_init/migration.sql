@@ -5,8 +5,8 @@ CREATE TYPE "TokenType" AS ENUM ('ACCESS', 'REFRESH', 'RESET_PASSWORD', 'VERIFY_
 CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN', 'SUPERADMIN', 'SUPERVISOR', 'SUPPORT');
 
 -- CreateTable
-CREATE TABLE "Cars" (
-    "id" TEXT NOT NULL,
+CREATE TABLE "Car" (
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "brand" TEXT NOT NULL,
     "release_year" INTEGER NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE "Cars" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Cars_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Car_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -75,7 +75,7 @@ CREATE TABLE "UserAddress" (
 -- CreateTable
 CREATE TABLE "UserCar" (
     "id" TEXT NOT NULL,
-    "carId" TEXT NOT NULL,
+    "carId" INTEGER NOT NULL,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -84,10 +84,7 @@ CREATE TABLE "UserCar" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Cars_plate_number_key" ON "Cars"("plate_number");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Token_userId_key" ON "Token"("userId");
+CREATE UNIQUE INDEX "Car_plate_number_key" ON "Car"("plate_number");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
@@ -117,4 +114,4 @@ ALTER TABLE "UserAddress" ADD CONSTRAINT "UserAddress_userId_fkey" FOREIGN KEY (
 ALTER TABLE "UserCar" ADD CONSTRAINT "UserCar_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserCar" ADD CONSTRAINT "UserCar_carId_fkey" FOREIGN KEY ("carId") REFERENCES "Cars"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserCar" ADD CONSTRAINT "UserCar_carId_fkey" FOREIGN KEY ("carId") REFERENCES "Car"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

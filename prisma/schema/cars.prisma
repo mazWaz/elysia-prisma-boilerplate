@@ -1,5 +1,5 @@
 model Car {
-  id                    Int             @id @default(autoincrement())
+  id                    String             @id @default(ulid())
   name                  String
   brand                 String
   release_year          Int

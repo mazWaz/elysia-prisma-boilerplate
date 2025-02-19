@@ -47,7 +47,7 @@ export const CreateCarResponse = {
         }),
         message: t.String({ default: 'Car data has been inserted' })
     }),
-    400: t.Object({ message: t.String({ default: 'Data is denied'}) })
+    400: t.Object({ message: t.String({ default: 'Insert car data failed'}) })
 };
 
 export const UpdateCar = t.Object({

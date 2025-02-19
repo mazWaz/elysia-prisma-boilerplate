@@ -54,7 +54,7 @@ export class AuthController {
 
     const user = await this.authService.login(email, username, password, rememberme);
     const tokens = await this.tokenService.generateAuthTokens(user as User, elysia_jwt);
-
+    
     return {
       data: { user, tokens },
       message: 'Successfully logged in'

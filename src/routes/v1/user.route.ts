@@ -7,6 +7,10 @@ import {
   checkIsStaff,
   checkIsSuperAdmin
 } from '../../middelware/authCheck';
+import { 
+  CreateUser,
+  CreateUserResponse
+} from '../../modul/user/user.validate';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { swaggerDetails } from '../../utils/responseHelper';
 import { userRole } from '../../config/role';
@@ -29,7 +33,25 @@ export const userRoute = new Elysia({
     }),
     detail: swaggerDetails('Get All user', true)
   })
-  .get('/user', 'hello User')
-  .get('/test', user.testUser, {
-    detail: swaggerDetails('Initialize App')
-  });
+
+  .get('/:id', user.getUserById, {
+    beforeHandle: auth(userRole.USER),
+    detail: swaggerDetails('Get User By ID')
+  })
+
+  .post('/create', user.createUser, {
+    beforeHandle: auth(userRole.USER),
+    detail: swaggerDetails('Create User'),
+    body: CreateUser,
+    response: CreateUserResponse
+  })
+
+  .patch('/:id', user.updateUser, {
+    beforeHandle: auth(userRole.USER),
+    detail: swaggerDetails('Update User')
+  })
+
+  .delete('/:id', user.deleteUser, {
+    beforeHandle: auth(userRole.USER),
+    detail: swaggerDetails('Delete User')
+  })

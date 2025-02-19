@@ -14,11 +14,6 @@ export class CarController {
         this.carSvc = new CarsService;
     }
 
-    testCar = catchAsync(async ({ set }: any) => {
-        set.status = HttpStatusEnum.HTTP_200_OK;
-        return { data: { status: 200}, message: `All System GO!` };
-    });
-
     getAllCar = catchAsync(async ({ set, query }: any) => {
         //const { detail } = query;
         const { page, limit, sortBy, sortOrder, searchField, search } = query;
@@ -26,7 +21,7 @@ export class CarController {
             page,
             limit,
             sortBy: { field: sortBy ?? 'createdAt', order: sortOrder },
-            search: { field: searchField ?? 'name', value: search }
+            search: { field: searchField ?? 'plate_number', value: search }
             //include: { detail }
         };
 
@@ -42,7 +37,6 @@ export class CarController {
 
     getCarById = catchAsync(async ({ set, params }: any) => {
         const { id } = params;
-
         const carId = parseInt(id, 10);
 
         const car = await this.carSvc.getCarByid(carId);
@@ -56,14 +50,6 @@ export class CarController {
 
     createCar = catchAsync(async ({ set, body }: any) => {
         const { name, brand, release_year, plate_number, status } = body;
-        const car = await this.carSvc.getCarByPlate(plate_number);
-
-        if (car){
-            set.status = HttpStatusEnum.HTTP_400_BAD_REQUEST;
-            return {
-                message: `Plate number ${plate_number} already registered.`
-            };
-        };
 
         const data = await this.carSvc.createCar(
             name,
@@ -109,4 +95,20 @@ export class CarController {
             data
         };
     })
+
+    deleteCar = catchAsync(async ({ set, params }: any) => {
+        const { id } = params;
+        const carId = parseInt(id, 10);
+
+        if (isNaN(carId)) {
+            throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, "Invalid car ID");
+        }
+
+        const data = await this.carSvc.deleteCarById(carId)
+
+        set.status = HttpStatusEnum.HTTP_200_OK
+        return {
+            message: 'Car data has been deleted'
+        }
+    });
 }

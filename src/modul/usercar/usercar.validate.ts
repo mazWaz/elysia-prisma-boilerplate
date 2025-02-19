@@ -27,15 +27,10 @@ export const CreateUser = t.Object({
         example: 'B4silth3M@cEdon1an',
         description: 'You need to be atleast have number, special characters, and letter uppercase on you password'
       }),
-  role: t.Enum({
-        USER: "USER",
-        ADMIN: "ADMIN",
-        SUPERADMIN: "SUPERADMIN",
-        SUPERVISOR: "SUPERVISOR",
-        SUPPORT: "SUPPORT"
-      }, {
-        example: "USER",
-        description: "Set by Admin"
+  role: 
+      t.String({
+        example: 'USER,ADMIN,SUPERADMIN',
+        description: 'Set by Admin'
       })
 })
 
@@ -45,13 +40,7 @@ export const CreateUserResponse = {
         id: t.String(),
         username: t.String(),
         email: t.String(),
-        role: t.Enum({
-          USER: "USER",
-          ADMIN: "ADMIN",
-          SUPERADMIN: "SUPERADMIN",
-          SUPERVISOR: "SUPERVISOR",
-          SUPPORT: "SUPPORT"
-        })
+        role: t.String()
     }),
     message: t.String({ default: 'Userdata has been inserted. '})
   }),
@@ -81,16 +70,10 @@ export const UpdateUser = {
         description: 'You need to be atleast have number, special characters, and letter uppercase on you password'
       }),
   role: 
-    t.Enum({
-      USER: "USER",
-      ADMIN: "ADMIN",
-      SUPERADMIN: "SUPERADMIN",
-      SUPERVISOR: "SUPERVISOR",
-      SUPPORT: "SUPPORT"
-    }, {
-    example: "USER",
-    description: "Set by Admin"
-  })
+      t.String({
+        example: 'USER,ADMIN,SUPERADMIN',
+        description: 'Set by Admin'
+      })
 }
 
 export const UpdateUserResponse = {

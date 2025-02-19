@@ -20,7 +20,7 @@ export class UsersService {
       'id',
       'email',
       'username',
-      'addresses',
+      'address',
       'role',
       'isEmailVerified',
       'createdAt',
@@ -39,7 +39,7 @@ export class UsersService {
       'id',
       'email',
       'username',
-      'addresses',
+      'address',
       'role',
       'isEmailVerified',
       'createdAt',
@@ -58,7 +58,7 @@ export class UsersService {
       'id',
       'email',
       'username',
-      'addresses',
+      'address',
       'role',
       'isEmailVerified',
       'createdAt',
@@ -78,6 +78,7 @@ export class UsersService {
     role: Role = Role.USER,
     isEmailVerified = false
   ): Promise<User> {
+    
     if (await this.getUserByEmail(email)) {
       throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Email already taken');
     }
@@ -91,15 +92,20 @@ export class UsersService {
       timeCost: 5 // the number of iterations
     });
 
-    return db.user.create({
-      data: {
-        email,
-        username,
-        role,
-        password: hashedPassword,
-        isEmailVerified
-      }
-    });
+    try {
+      return await db.user.create({
+        data: {
+          email,
+          username,
+          role,
+          password: hashedPassword,
+          isEmailVerified,
+        },
+      });
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
   }
 
   async updateUser<Key extends keyof User>(
@@ -122,9 +128,21 @@ export class UsersService {
       throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Email or Username already taken');
     }
 
+    if (updateBody.password) {
+      updateBody.password = await Bun.password.hash(updateBody.password as string, {
+        algorithm: 'argon2id',
+        memoryCost: 5,
+        timeCost: 5,
+      });
+    }
+
     const updatedUser = await db.user.update({
       where: { id: user.id },
-      data: updateBody,
+      data: {
+        email: updateBody.email,
+        username: updateBody.username,
+        password: updateBody.password,
+      },
       select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})
     });
 

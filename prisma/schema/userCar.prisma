@@ -1,10 +1,10 @@
 model UserCar {
-  id                    String          @id @default(ulid())
-  carId                 Int             @unique
-  userId                String          @unique @default(ulid()) 
-  user                  User            @relation("UsersCarfk", fields: [userId], references: [id])
-  car                   Car             @relation("UserCarsfk", fields: [carId], references: [id])
-  location              Location[]      @relation("UserCarLocationfk")
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+  id         String      @id @default(ulid())
+  carId      String         @unique
+  userId     String      @unique
+  user       User        @relation("UsersCarfk", fields: [userId], references: [id])
+  car        Car         @relation("UserCarsfk", fields: [carId], references: [id])
+  location   Location[]  @relation("UserCarLocationfk")
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }

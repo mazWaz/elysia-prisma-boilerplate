@@ -51,7 +51,6 @@ export const addressTest = async(context: TestContext) => {
             testAddressId = body.data.id;
 
             expect(testAddressId).toBeDefined();
-            console.log("Address ID : ", body.data.id);
         });
 
         it('GET /address/ - should return all address', async () => {

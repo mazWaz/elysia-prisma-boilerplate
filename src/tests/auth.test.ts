@@ -28,9 +28,6 @@ export const authTest = (context: TestContext)  => {
     }
 
     afterAll(async () => {
-      // if (testUserId) {
-      //   await testClient.delete(`/v1/auth/${testUserId}`);
-      // }
     });
 
     it('POST /v1/auth/signup - should create new user', async () => {

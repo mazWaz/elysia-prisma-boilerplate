@@ -44,7 +44,6 @@ export const userTest = async(context: TestContext) => {
             testUserId = body.data.id;
 
             expect(testUserId).toBeDefined();
-            console.log("User ID : ", body.data.id);
         });
 
         it('GET /user/ - should return all users', async () => {
@@ -55,8 +54,6 @@ export const userTest = async(context: TestContext) => {
         it('GET /user/:id - should return a user by ID', async () => {
             const response = await testClient.get(`/v1/user/${testUserId}`);
             expect(response.status).toBe(HttpStatusEnum.HTTP_200_OK);
-
-            console.log("User ID : ", testUserId);
         });
 
         it('PATCH /user/:id - should update a user', async () => {

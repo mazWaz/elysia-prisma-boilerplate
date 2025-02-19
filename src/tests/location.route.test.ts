@@ -39,7 +39,6 @@ export const locationTest = async(context: TestContext) => {
             testLocationId = body.data.id;
 
             expect(testLocationId).toBeDefined();
-            console.log("Location ID : ", body.data.id);
         });
 
         it('GET /location/ - should return all location', async () => {
@@ -50,8 +49,6 @@ export const locationTest = async(context: TestContext) => {
         it('GET /location/:id - should return a location by ID', async () => {
             const response = await testClient.get(`/v1/location/getlocation/${testLocationId}`);
             expect(response.status).toBe(HttpStatusEnum.HTTP_200_OK);
-
-            console.log("Location ID : ", testLocationId);
         });
 
         it('PATCH /location/:id - should update a location', async () => {
@@ -66,7 +63,6 @@ export const locationTest = async(context: TestContext) => {
             const response = await testClient.delete(`/v1/location/${testLocationId}`);
             expect(response.status).toBe(HttpStatusEnum.HTTP_200_OK);
 
-            // Verify deletion
             const deletedResponse = await testClient.get(`/v1/location/${testLocationId}`);
             expect(deletedResponse.status).toBe(HttpStatusEnum.HTTP_404_NOT_FOUND);
         });

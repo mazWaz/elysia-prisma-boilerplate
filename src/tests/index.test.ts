@@ -29,10 +29,6 @@ describe('Main test suite', async () => {
   authTest(context);
 
    afterAll( async () =>{
-    console.log("refreshToken : ", context.refreshToken);
-    console.log("userToken : ", context.userToken);
-    console.log("adminToken : ", context.adminToken);
-    console.log("testUser ID : ", context.testUserId);
     await carTest(context);
     await addressTest(context);
     await userTest(context);

@@ -43,14 +43,11 @@ export const userCarTest = async(context: TestContext) => {
             testUserCarId = body.data.id;
 
             expect(testUserCarId).toBeDefined();
-            console.log("UserCar ID : ", body.data.id);
         });
 
         it('GET /usercar/:id - should return an usercar by ID', async () => {
             const response = await testClient.get(`/v1/usercar/`);
             expect(response.status).toBe(HttpStatusEnum.HTTP_200_OK);
-
-            console.log("UserCar ID : ", testUserCarId);
         });
 
         it('PATCH /usercar/:id - should update a userCar', async () => {

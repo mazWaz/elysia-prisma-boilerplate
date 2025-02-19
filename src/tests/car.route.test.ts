@@ -13,7 +13,7 @@ interface TestContext {
 
 export const carTest = async(context: TestContext) => {
     return describe('CarRoute Integration Tests with Authentication', () => {
-        // Create client with authentication header
+
         const testClient = createTestClient(app, {
             Authorization: `Bearer ${context.userToken}`
         });
@@ -47,7 +47,6 @@ export const carTest = async(context: TestContext) => {
             testCarId = body.data.id;
            
             expect(testCarId).toBeDefined();
-            console.log("Car ID : ", body.data.id);
         });
     
         it('GET /car/ - should return all cars', async () => {
@@ -58,8 +57,6 @@ export const carTest = async(context: TestContext) => {
         it('GET /car/:id - should return a car by ID', async () => {
             const response = await testClient.get(`/v1/car/getcar/${testCarId}`);
             expect(response.status).toBe(HttpStatusEnum.HTTP_200_OK);
-            
-            console.log("Car ID : ", testCarId);
         });
     
         it('PATCH /car/:id - should update a car', async () => {
@@ -74,7 +71,6 @@ export const carTest = async(context: TestContext) => {
             const response = await testClient.delete(`/v1/car/${testCarId}`);
             expect(response.status).toBe(HttpStatusEnum.HTTP_200_OK);
     
-            // Verify deletion
             const deletedResponse = await testClient.get(`/v1/car/${testCarId}`);
             expect(deletedResponse.status).toBe(HttpStatusEnum.HTTP_404_NOT_FOUND);
         });

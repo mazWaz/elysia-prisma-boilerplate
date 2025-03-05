@@ -19,10 +19,10 @@ export class UserController {
     return { data: { asdasd: 'asdasd' }, message: `All Systems GO!` };
   });
 
-  getAllUser = catchAsync(async ({ set, query }: any) => {
+  getAllUser = catchAsync(async ({ set, query, request }: any) => {
+    console.log(request.userAuth)
     const { isEmailVerified, profile } = query;
     const { page, limit, sortBy, sortOrder, searchField, search } = query;
-    console.log('askdksajdasd', searchField !== 'role');
     const searchOptions: SearchOptions = {
       page,
       limit,
@@ -34,7 +34,7 @@ export class UserController {
       include: { password: false, address: true }
     };
 
-    const users = await prismaSearch('user', searchOptions);
+    const users = await prismaSearch('users', searchOptions);
     set.status = HttpStatusEnum.HTTP_200_OK;
     if (!users) {
       set.status = HttpStatusEnum.HTTP_500_INTERNAL_SERVER_ERROR;
@@ -60,7 +60,7 @@ export class UserController {
   });
 
   createUser = catchAsync(async ({ set, body }: any) => {
-    const { email, username, password, role } = body;
+    const { email, username, password, roleId, departmentId } = body;
     const existEmail = await this.userSvc.getUserByEmail(email);
     const existUsername = await this.userSvc.getUserByUsername(username);
 
@@ -70,13 +70,12 @@ export class UserController {
         message: `Email or Username already taken. Choose something else`
       };
     };
-    
-
     const data = await this.userSvc.createUser(
       email,
       username,
       password,
-      role
+      roleId,
+      departmentId
     );
 
     set.status = HttpStatusEnum.HTTP_200_OK;
@@ -93,7 +92,7 @@ export class UserController {
 
   updateUser = catchAsync(async ({ set, body, params }: any) => {
     const { id } = params;
-    const { email, username, password, role } = body;
+    const { email, username, password, roleId, departmentId } = body;
     
     const existEmail = await this.userSvc.getUserByEmail(email);
     const existUsername = await this.userSvc.getUserByUsername(username);

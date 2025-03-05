@@ -6,7 +6,7 @@ model Token {
   blacklisted           Boolean
   createdAt             DateTime        @default(now())
   userId                String         
-  user                  User            @relation("UserTokens", fields: [userId], references: [id])
+  user                  Users            @relation("UserTokens", fields: [userId], references: [id])
 }
 
 enum TokenType {

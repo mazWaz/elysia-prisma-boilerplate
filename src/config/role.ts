@@ -1,16 +1,17 @@
-import { Role } from '@prisma/client';
+// config/role.ts
+export type userRole =
+  | 'manageEverything'
+  | 'manageUsers'
+  | 'manageContent'
+  | 'viewReports'
+  | 'manageTickets'
+  | 'viewProfile';
 
-export enum userRole {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-  SUPERADMIN = 'SUPERADMIN'
-}
-
-const allRoles = {
-  [Role.USER]: [userRole.USER],
-  [Role.ADMIN]: [userRole.ADMIN],
-  [Role.SUPERADMIN]: [userRole.SUPERADMIN, userRole.ADMIN, userRole.USER]
-};
-
-export const roles = Object.keys(allRoles);
-export const roleRights = new Map(Object.entries(allRoles));
+export const roleRights = new Map<string, userRole[]>([
+  ['SUPERADMIN', ['manageEverything']],
+  ['ADMIN', ['manageUsers', 'manageContent', 'viewReports', 'manageTickets', 'viewProfile']], // added more rights for ADMIN for example
+  ['STAFF', ['manageContent', 'viewProfile', 'manageTickets']], // added STAFF role and some rights
+  ['SUPERVISOR', ['viewReports', 'viewProfile']],
+  ['SUPPORT', ['manageTickets', 'viewProfile']],
+  ['USER', ['viewProfile']],
+]);

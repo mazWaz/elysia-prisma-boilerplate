@@ -5,7 +5,8 @@ import {
     checkAuth,
     checkIsAdmin,
     checkIsStaff,
-    checkIsSuperAdmin
+    checkIsSuperAdmin,
+    requireRoles
  } from "../../middelware/authCheck";
 import { HttpStatusEnum } from "../../utils/httpStatusCode";
 import { swaggerDetails } from "../../utils/responseHelper";
@@ -15,7 +16,7 @@ import {
     UpdateCar,
     UpdateCarResponse
 } from '../../modul/car/car.validate';
-import { userRole } from "../../config/role";
+import type { userRole } from "../../config/role";
 import { paginationOptions } from "../../config/prisma";
 import { userQueriesDTO } from "../../modul/user/user.validate";
 
@@ -23,12 +24,12 @@ const carController = new CarController();
 
 export const carRoute = new Elysia({
     prefix: '/car',
-    detail: { description: 'Car endpoints', tags: ['4.Car']}
+    detail: { description: 'Car endpoints', tags: ['7.Car']}
 })
     .onBeforeHandle([checkAuth])
 
     .get('/', carController.getAllCar, {
-        beforeHandle: auth(userRole.USER),
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         query: t.Object({
             ...paginationOptions,
             ...userQueriesDTO
@@ -37,23 +38,23 @@ export const carRoute = new Elysia({
     })
 
     .get('/getcar/:id', carController.getCarById, {
-        beforeHandle: auth(userRole.USER),
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Get Car By ID')
     })
 
     .post('/create', carController.createCar, {
-        beforeHandle: auth(userRole.USER),
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Create Car'),
         body: CreateCar,
         response: CreateCarResponse
     })
 
     .patch('/:id', carController.updateCar, {
-       beforeHandle: auth(userRole.USER),
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Update Car')
     })
 
     .delete('/:id', carController.deleteCar, {
-        beforeHandle: auth(userRole.USER),
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Delete Car')
     })    

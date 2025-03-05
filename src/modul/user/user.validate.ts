@@ -27,16 +27,14 @@ export const CreateUser = t.Object({
         example: 'B4silth3M@cEdon1an',
         description: 'You need to be atleast have number, special characters, and letter uppercase on you password'
       }),
-  role: t.Enum({
-        USER: "USER",
-        ADMIN: "ADMIN",
-        SUPERADMIN: "SUPERADMIN",
-        SUPERVISOR: "SUPERVISOR",
-        SUPPORT: "SUPPORT"
-      }, {
-        example: "USER",
+  roleId: t.Number({
+        example: 1,
         description: "Set by Admin"
-      })
+      }),
+  departmentId: t.String({
+        example: '01XIWJFJA34',
+        description: 'Department id that user working at'
+  })
 })
 
 export const CreateUserResponse = {
@@ -45,13 +43,8 @@ export const CreateUserResponse = {
         id: t.String(),
         username: t.String(),
         email: t.String(),
-        role: t.Enum({
-          USER: "USER",
-          ADMIN: "ADMIN",
-          SUPERADMIN: "SUPERADMIN",
-          SUPERVISOR: "SUPERVISOR",
-          SUPPORT: "SUPPORT"
-        })
+        roleId: t.Number(),
+        departmentId: t.String()
     }),
     message: t.String({ default: 'Userdata has been inserted. '})
   }),
@@ -80,16 +73,15 @@ export const UpdateUser = {
         example: 'B4silth3M@cEdon1an',
         description: 'You need to be atleast have number, special characters, and letter uppercase on you password'
       }),
-  role: 
-    t.Enum({
-      USER: "USER",
-      ADMIN: "ADMIN",
-      SUPERADMIN: "SUPERADMIN",
-      SUPERVISOR: "SUPERVISOR",
-      SUPPORT: "SUPPORT"
-    }, {
-    example: "USER",
-    description: "Set by Admin"
+  roleId: 
+      t.Number({
+        example: 1,
+        description: "Set by Admin"
+      }),
+  departmentId: 
+      t.String({
+        example: '01XIWJFJA34',
+        description: 'Department id that user working at'
   })
 }
 

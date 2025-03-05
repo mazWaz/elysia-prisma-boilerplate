@@ -1,4 +1,4 @@
-import { Token, TokenType, User } from '@prisma/client';
+import { Token, TokenType, Users } from '@prisma/client';
 import { Moment } from 'moment';
 import config from '../../config/config';
 import moment from 'moment';
@@ -20,7 +20,7 @@ export class TokenService {
   }
 
   async generateToken(
-    user: User,
+    user: Users,
     expires: Moment,
     type: TokenType,
     elysiaJwt: any,
@@ -29,8 +29,9 @@ export class TokenService {
     const payload = {
       sub: user.id,
       name: user.username,
+      deptid: user.departmentId,
       email_verified: user.isEmailVerified,
-      roles: user.role,
+      roles: user.roleId,
       picture: null,
       iat: moment().unix(),
       exp: expires.unix(),
@@ -70,7 +71,7 @@ export class TokenService {
     return tokenData;
   }
 
-  async generateAuthTokens(user: User, elysia_jwt: any): Promise<AuthTokensResponse> {
+  async generateAuthTokens(user: Users, elysia_jwt: any): Promise<AuthTokensResponse> {
     const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
     const accessToken = await this.generateToken(
       user,

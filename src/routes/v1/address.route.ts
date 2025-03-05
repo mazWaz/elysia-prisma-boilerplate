@@ -5,11 +5,12 @@ import {
     checkAuth,
     checkIsAdmin,
     checkIsStaff,
-    checkIsSuperAdmin
+    checkIsSuperAdmin,
+    requireRoles
 } from '../../middelware/authCheck';
 import { HttpStatusEnum } from "../../utils/httpStatusCode";
 import { swaggerDetails } from "../../utils/responseHelper";
-import { userRole } from "../../config/role";
+import type { userRole } from "../../config/role";
 import { paginationOptions } from "../../config/prisma";
 import { CreateUser, userQueriesDTO } from "../../modul/user/user.validate";
 
@@ -22,7 +23,7 @@ export const userAddressRoute = new Elysia({
     .onBeforeHandle([checkAuth])
 
     .get('/', address.getAllAddress, {
-        beforeHandle: auth(userRole.USER),
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         query: t.Object({
             ...paginationOptions,
             ...userQueriesDTO
@@ -31,17 +32,21 @@ export const userAddressRoute = new Elysia({
     })
 
     .get('/:id', address.getAddressById, {
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Get address by ID')
     })
 
     .post('/create', address.createAddress, {
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Create address')
     })
 
     .patch('/:id', address.updateAddress, {
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Update address')
     })
 
     .delete('/:id', address.deleteAddress, {
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Delete address by ID')
     })

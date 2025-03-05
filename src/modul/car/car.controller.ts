@@ -3,7 +3,7 @@ import { CarsService } from './car.service';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { catchAsync } from '../../utils/catchAsync';
 import ApiError from '../../utils/apiError';
-import { Car } from '@prisma/client';
+import { Cars } from '@prisma/client';
 import { prismaSearch } from '../../config/prisma';
 import exclude from '../../utils/exclude';
 
@@ -25,7 +25,7 @@ export class CarController {
             //include: { detail }
         };
 
-        const cars = await prismaSearch('car', searchOptions);
+        const cars = await prismaSearch('cars', searchOptions);
         set.status = HttpStatusEnum.HTTP_200_OK;
         if (!cars) {
             set.status = HttpStatusEnum.HTTP_500_INTERNAL_SERVER_ERROR;
@@ -37,9 +37,8 @@ export class CarController {
 
     getCarById = catchAsync(async ({ set, params }: any) => {
         const { id } = params;
-        const carId = parseInt(id, 10);
 
-        const car = await this.carSvc.getCarByid(carId);
+        const car = await this.carSvc.getCarByid(id);
         const data = exclude(car, ['createdAt', 'updatedAt'] as (keyof typeof car)[]);
 
         set.status = HttpStatusEnum.HTTP_200_OK;
@@ -49,14 +48,15 @@ export class CarController {
     });
 
     createCar = catchAsync(async ({ set, body }: any) => {
-        const { name, brand, release_year, plate_number, status } = body;
+        const { name, brand, release_year, plate_number, status, departmentId } = body;
 
         const data = await this.carSvc.createCar(
             name,
             brand,
             release_year,
             plate_number,
-            status
+            status,
+            departmentId
         );
 
         set.status = HttpStatusEnum.HTTP_200_OK;
@@ -74,7 +74,6 @@ export class CarController {
     updateCar = catchAsync(async ({ set, body, params }: any) => {
         const { id } = params;
         const { name, brand, release_year, plate_number, status } = body;
-        const carId = parseInt(id, 10);
 
         const existingCar = await this.carSvc.getCarByPlate(plate_number);
 
@@ -86,7 +85,7 @@ export class CarController {
         };
 
         const data = await this.carSvc.updateCar(
-            carId,
+            id,
             body
         );
 
@@ -98,13 +97,12 @@ export class CarController {
 
     deleteCar = catchAsync(async ({ set, params }: any) => {
         const { id } = params;
-        const carId = parseInt(id, 10);
 
-        if (isNaN(carId)) {
+        if (isNaN(id)) {
             throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, "Invalid car ID");
         }
 
-        const data = await this.carSvc.deleteCarById(carId)
+        const data = await this.carSvc.deleteCarById(id)
 
         set.status = HttpStatusEnum.HTTP_200_OK
         return {

@@ -1,3 +1,4 @@
+// user.route.ts
 import Elysia, { t } from 'elysia';
 import { UserController } from '../../modul/user/user.controller';
 import {
@@ -5,28 +6,30 @@ import {
   checkAuth,
   checkIsAdmin,
   checkIsStaff,
-  checkIsSuperAdmin
+  checkIsSuperAdmin,
+  checkIsUser, // import individual role checks
+  requireRoles // import requireRoles
 } from '../../middelware/authCheck';
-import { 
+import {
   CreateUser,
   CreateUserResponse
 } from '../../modul/user/user.validate';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { swaggerDetails } from '../../utils/responseHelper';
-import { userRole } from '../../config/role';
 import { paginationOptions } from '../../config/prisma';
 import { userQueriesDTO } from '../../modul/user/user.validate';
+import { userRole } from '../../config/role'; // import userRole type
 
 const user = new UserController();
 
 export const userRoute = new Elysia({
   prefix: '/user',
-  detail: { description: 'User endpoints', tags: ['3.User'] }
+  detail: { description: 'User endpoints', tags: ['5.User'] }
 })
   .onBeforeHandle([checkAuth])
 
   .get('/', user.getAllUser, {
-    beforeHandle: auth(userRole.USER),
+    //beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
     query: t.Object({
       ...paginationOptions,
       ...userQueriesDTO
@@ -35,23 +38,23 @@ export const userRoute = new Elysia({
   })
 
   .get('/:id', user.getUserById, {
-    beforeHandle: auth(userRole.USER),
+    //beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
     detail: swaggerDetails('Get User By ID')
   })
 
   .post('/create', user.createUser, {
-    beforeHandle: auth(userRole.USER),
+    //beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
     detail: swaggerDetails('Create User'),
     body: CreateUser,
     response: CreateUserResponse
   })
 
   .patch('/:id', user.updateUser, {
-    beforeHandle: auth(userRole.USER),
+    //beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
     detail: swaggerDetails('Update User')
   })
 
   .delete('/:id', user.deleteUser, {
-    beforeHandle: auth(userRole.USER),
+    //beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
     detail: swaggerDetails('Delete User')
   })

@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client';
+import { Roles } from '@prisma/client';
 import { t } from 'elysia';
 
 export const LoginUserBody = t.Object({
@@ -45,10 +45,6 @@ export const SignupUserBody = t.Object({
     pattern: '^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$',
     description:
       'Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.'
-  }),
-  role: t.Union([t.Literal(Role.SUPERADMIN), t.Literal(Role.ADMIN), t.Literal(Role.USER)], {
-    example: 'ADMIN',
-    description: 'Assign Role user by Super Admin Or Admin'
   })
 });
 

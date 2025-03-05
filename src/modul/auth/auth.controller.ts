@@ -6,7 +6,7 @@ import { catchAsync } from '../../utils/catchAsync';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { UsersService } from '../user/user.service';
 import { AuthService } from './auth.service';
-import { User } from '@prisma/client';
+import { Users } from '@prisma/client';
 import exclude from '../../utils/exclude';
 
 export class AuthController {
@@ -28,9 +28,9 @@ export class AuthController {
   });
 
   signup = catchAsync(async ({ set, body }: any) => {
-    const { email, username, password } = body;
-    const user = await this.usersService.createUser(email, username, password);
-    const data = exclude(user, ['password', 'createdAt', 'updatedAt']);
+    const { email, username, password, roleId, departmentId } = body;
+    const user = await this.usersService.createUser(email, username, password, roleId, departmentId);
+    const data = exclude(user, ['password', 'createdAt', 'updatedAt', 'roleId', 'departmentId']);
     set.status = HttpStatusEnum.HTTP_201_CREATED;
     return {
       data,
@@ -39,9 +39,9 @@ export class AuthController {
   });
 
   signupByAdmin = catchAsync(async ({ set, body }: any) => {
-    const { email, username, password, role, isEmailVerified } = body;
+    const { email, username, password, roleId, departmentId } = body;
 
-    const data = await this.usersService.createUser(email, username, password, role);
+    const data = await this.usersService.createUser(email, username, password, roleId, departmentId);
 
     set.status = HttpStatusEnum.HTTP_201_CREATED;
     return {
@@ -53,7 +53,7 @@ export class AuthController {
     const { email, username, password, rememberme } = body;
 
     const user = await this.authService.login(email, username, password, rememberme);
-    const tokens = await this.tokenService.generateAuthTokens(user as User, elysia_jwt);
+    const tokens = await this.tokenService.generateAuthTokens(user as Users, elysia_jwt);
     
     return {
       data: { user, tokens },

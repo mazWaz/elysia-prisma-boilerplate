@@ -1,11 +1,13 @@
-model Car {
+model Cars {
   id                    String             @id @default(ulid())
   name                  String
   brand                 String
   release_year          Int
   plate_number          String          @unique
   status                String
-  user_car              UserCar?       @relation("UserCarsfk")
+  departmentId          String          
+  user_car              UserCars?       @relation("UserCarsfk")
+  department            Departments     @relation("CarDeparmentfk", fields: [departmentId], references: [id])
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
 }

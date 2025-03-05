@@ -2,7 +2,7 @@ import { error } from 'elysia';
 import ApiError from '../../utils/apiError';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { db } from '../../config/prisma';
-import { UserAddress, Prisma, User } from '@prisma/client';
+import { UserAddress, Prisma, Users } from '@prisma/client';
 
 export class AddressService {
     private static instance: AddressService;

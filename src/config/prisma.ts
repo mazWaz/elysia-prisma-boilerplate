@@ -29,8 +29,6 @@ export const prismaSearch = async <T extends keyof PrismaClient>(
 ) => {
   const { sortBy, limit = 25, page = 1, search, include } = options;
 
-  console.log('options', options);
-
   const skip = limit * (page - 1);
 
   // Initialize the where clause

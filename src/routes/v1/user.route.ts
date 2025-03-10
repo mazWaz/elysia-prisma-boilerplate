@@ -2,7 +2,6 @@
 import Elysia, { t } from 'elysia';
 import { UserController } from '../../modul/user/user.controller';
 import {
-  auth,
   checkAuth,
   checkIsAdmin,
   checkIsStaff,
@@ -29,7 +28,7 @@ export const userRoute = new Elysia({
   .onBeforeHandle([checkAuth])
 
   .get('/', user.getAllUser, {
-    //beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
+    beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
     query: t.Object({
       ...paginationOptions,
       ...userQueriesDTO

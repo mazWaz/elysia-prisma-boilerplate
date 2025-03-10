@@ -16,11 +16,11 @@ export class UserController {
 
   testUser = catchAsync(async ({ set }: any) => {
     set.status = HttpStatusEnum.HTTP_200_OK;
-    return { data: { asdasd: 'asdasd' }, message: `All Systems GO!` };
+    return { message: `All Systems GO!` };
   });
 
   getAllUser = catchAsync(async ({ set, query, request }: any) => {
-    console.log(request.userAuth)
+    console.log("Controller Request Auth : ", request.userAuth)
     const { isEmailVerified, profile } = query;
     const { page, limit, sortBy, sortOrder, searchField, search } = query;
     const searchOptions: SearchOptions = {

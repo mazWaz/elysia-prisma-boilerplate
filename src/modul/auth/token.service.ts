@@ -31,6 +31,7 @@ export class TokenService {
       name: user.username,
       deptid: user.departmentId,
       email_verified: user.isEmailVerified,
+      
       roles: user.roleId,
       picture: null,
       iat: moment().unix(),

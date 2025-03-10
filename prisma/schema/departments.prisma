@@ -4,7 +4,6 @@ model Departments {
     name            String      
     address         String
     category        Category        @default(POLRES)
-    region_id       Int
     Users           Users[]         @relation("UserDepartmentfk")
     Cars            Cars[]          @relation("CarDeparmentfk")
     province        String

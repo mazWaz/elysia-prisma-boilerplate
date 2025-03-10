@@ -49,9 +49,9 @@ export class DepartmentService {
         }
     }
 
-    async createDepartment(name: string, address: string, category: Category, region_id: number, country: string, province: string, district: string, subDistrict: string) {
+    async createDepartment(name: string, address: string, category: Category, province: string, district: string, subDistrict: string) {
         const createdDepartment = await db.departments.create({
-            data: { name, address, category, region_id, country, province, district, subDistrict },
+            data: { name, address, category, province, district, subDistrict },
         });
 
         return createdDepartment;
@@ -65,8 +65,6 @@ export class DepartmentService {
             'name',
             'address',
             'category',
-            'region_id',
-            'country',
             'province',
             'district',
             'subDistrict'

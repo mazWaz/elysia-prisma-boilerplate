@@ -1,17 +1,9 @@
-// config/role.ts
-export type userRole =
-  | 'manageEverything'
-  | 'manageUsers'
-  | 'manageContent'
-  | 'viewReports'
-  | 'manageTickets'
-  | 'viewProfile';
+// role.ts
+export const userRole = {
+  SUPERADMIN: 1,
+  ADMIN: 2,
+  STAFF: 3,
+  USER: 4,
+};
 
-export const roleRights = new Map<string, userRole[]>([
-  ['SUPERADMIN', ['manageEverything']],
-  ['ADMIN', ['manageUsers', 'manageContent', 'viewReports', 'manageTickets', 'viewProfile']], // added more rights for ADMIN for example
-  ['STAFF', ['manageContent', 'viewProfile', 'manageTickets']], // added STAFF role and some rights
-  ['SUPERVISOR', ['viewReports', 'viewProfile']],
-  ['SUPPORT', ['manageTickets', 'viewProfile']],
-  ['USER', ['viewProfile']],
-]);
+export type UserRole = keyof typeof userRole; // "SUPERADMIN" | "ADMIN" | "STAFF" | "USER"

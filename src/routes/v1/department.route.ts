@@ -1,7 +1,6 @@
 import Elysia, { t } from "elysia";
 import { DepartmentController } from "../../modul/department/department.controller";
 import {
-    auth,
     checkAuth,
     checkIsUser,
     checkIsAdmin,

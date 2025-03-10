@@ -1,33 +1,22 @@
 import { PrismaClient } from "@prisma/client";
+import { readFile } from 'fs/promises'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 async function main() {
-    // Seed initial roles
-    await prisma.roles.createMany({
-        data: [
-            {
-                name: 'SUPERADMIN',
-                description: 'Full system access'
-            },
-            {
-                name: 'ADMIN',
-                description: 'Administrator Privileges'
-            },
-            {
-                name: 'USER',
-                description: 'Regular user'
-            },
-        ],
-        skipDuplicates: true,
-    });
+    const sql = await readFile('prisma/province.sql', 'utf-8')
+    const queries = sql.split(';').filter(q => q.trim())
+
+    for (const query of queries) {
+        await prisma.$executeRawUnsafe(query)
+    }
 }
 
-main() 
-    .catch((e) => {
-        console.error(e);
-        process.exit(1);
+main()
+    .catch(e => {
+        console.error(e)
+        process.exit(1)
     })
     .finally(async () => {
-        await prisma.$disconnect();
-    });
+        await prisma.$disconnect()
+    })

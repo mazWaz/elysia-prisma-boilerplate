@@ -48,14 +48,12 @@ export class DepartmentController {
     });
 
     createDepartment = catchAsync(async ({ set, body }: any) => {
-        const { name, address, category, region_id, country, province, district, subDistrict } = body;
+        const { name, address, category, province, district, subDistrict } = body;
 
         const data = await this.departmentSvc.createDepartment(
             name,
             address,
             category,
-            region_id,
-            country,
             province,
             district,
             subDistrict

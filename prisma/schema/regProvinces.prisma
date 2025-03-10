@@ -1,0 +1,5 @@
+model reg_provinces {
+    id          String              @id @default(uuid())
+    name        String       
+    Regency     reg_regencies[]     @relation("RegencyProvincefk")
+}

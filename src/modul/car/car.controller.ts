@@ -98,10 +98,6 @@ export class CarController {
     deleteCar = catchAsync(async ({ set, params }: any) => {
         const { id } = params;
 
-        if (isNaN(id)) {
-            throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, "Invalid car ID");
-        }
-
         const data = await this.carSvc.deleteCarById(id)
 
         set.status = HttpStatusEnum.HTTP_200_OK

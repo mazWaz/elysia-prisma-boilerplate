@@ -14,11 +14,6 @@ export class UserCarController {
         this.userCarSvc = new UserCarService();
     }
 
-    testUserCar = catchAsync(async ({ set }: any) => {
-        set.status = HttpStatusEnum.HTTP_200_OK;
-        return { data: { asdasd: 'asdasd'}, message: 'All System Go!'};
-    });
-
     getAllUserCar = catchAsync(async ({ set,query }: any) => {
         const { page, limit, sortBy, sortOrder, searchField, search } = query;
         const searchOptions = {
@@ -27,7 +22,7 @@ export class UserCarController {
             sortBy: { field: sortBy ?? 'createdAt', order: sortOrder }
         };
 
-        const usercar = await prismaSearch('userCar', searchOptions);
+        const usercar = await prismaSearch('userCars', searchOptions);
         set.status = HttpStatusEnum.HTTP_200_OK;
         if(!usercar) {
             set.status = HttpStatusEnum.HTTP_500_INTERNAL_SERVER_ERROR;

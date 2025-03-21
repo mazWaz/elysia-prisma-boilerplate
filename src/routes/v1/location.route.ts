@@ -1,7 +1,6 @@
 import Elysia, { t } from "elysia";
 import { LocationController } from "../../modul/location/location.controller";
 import {
-    auth,
     checkAuth,
     checkIsAdmin,
     checkIsStaff,

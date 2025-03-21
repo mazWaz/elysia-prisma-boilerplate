@@ -19,7 +19,8 @@ export const authTest = (context: TestContext)  => {
       email: `mashu+${testId}@gmail.com`,
       username: `mashu_${testId}`,
       password: 'B4silth3M@cEdon1an',
-      role: 'USER' as const
+      roleId: 2,
+      departmentId: '01JP1QG2CBWMMDRH4Y31V86F7V'
     };
 
     const userBodyLogin = {

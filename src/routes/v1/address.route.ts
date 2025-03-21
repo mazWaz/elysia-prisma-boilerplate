@@ -1,11 +1,7 @@
 import Elysia, { t } from "elysia";
 import { AddressController } from "../../modul/address/address.controller";
 import {
-    auth,
     checkAuth,
-    checkIsAdmin,
-    checkIsStaff,
-    checkIsSuperAdmin,
     requireRoles
 } from '../../middelware/authCheck';
 import { HttpStatusEnum } from "../../utils/httpStatusCode";

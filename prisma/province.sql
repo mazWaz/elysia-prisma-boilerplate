@@ -7831,3 +7831,9 @@ INSERT INTO "reg_districts" VALUES
 ('950830', '9508', 'Nenggeagin'),
 ('950831', '9508', 'Krepkuri'),
 ('950832', '9508', 'Pasir Putih');
+
+INSERT INTO "Roles" VALUES
+('', 'SUPERADMIN', 'Have full access through whole system'),
+('', 'ADMIN', 'Have a lot of access through whole system'),
+('', 'STAFF', 'Have partial access through whole system'),
+('', 'USER', 'Have limited access through whole system');

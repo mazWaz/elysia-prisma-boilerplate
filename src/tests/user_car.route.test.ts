@@ -19,18 +19,15 @@ export const userCarTest = async(context: TestContext) => {
 
         const testId = randomUUID().substring(0, 3);
         let testUserCarId: string;
-        let updateUserCarID: string;
-
-        updateUserCarID = '01JMBSWH2J99JE0GCQGSBYRN3M';
 
         const userCarBodyCreate = {
-            carId: 2,
-            userId: '01JJ8NPBQRH68545NJPY4V1D0M'
+            carId: '01JPSAWXQP6S4D2EPRMV143M01',
+            userId: '01JP4NSXHM6ZRGHSPFQBKRN9TH'
         };
 
         const userCarBodyUpdate = {
-            carId: 3,
-            userId: '01JJ6RZFQV63BJKH328JKXJN5K'
+            carId: '01JPSAWXQP6S4D2EPRMV143M01',
+            userId: '01JP4FQ20CESWTPJV155E1QYKR'
         };
 
         it('POST /usercar/create - should create a new user car', async () => {
@@ -46,13 +43,13 @@ export const userCarTest = async(context: TestContext) => {
         });
 
         it('GET /usercar/:id - should return an usercar by ID', async () => {
-            const response = await testClient.get(`/v1/usercar/`);
+            const response = await testClient.get(`/v1/usercar/${testUserCarId}`);
             expect(response.status).toBe(HttpStatusEnum.HTTP_200_OK);
         });
 
         it('PATCH /usercar/:id - should update a userCar', async () => {
             const response = await testClient.patch(
-                `/v1/usercar/${updateUserCarID}`,
+                `/v1/usercar/${testUserCarId}`,
                 userCarBodyUpdate
             );
             expect(response.status).toBe(HttpStatusEnum.HTTP_200_OK);

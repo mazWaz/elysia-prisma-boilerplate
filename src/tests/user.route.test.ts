@@ -24,14 +24,16 @@ export const userTest = async(context: TestContext) => {
             email: `breath+${testId}@gmail.com`,
             username: `breath_${testId}`,
             password: 'B4silth3M@cEdon1an',
-            role: 'USER' as const
+            roleId: 3,
+            departmentId: '01JP1QG2CBWMMDRH4Y31V86F7V'
         };
 
         const userBodyUpdate = {
             email: `breath1+${testId}@gmail.com`,
             username: `breath1_${testId}`,
             password: 'B4silth3M@cEdon1an',
-            role: 'USER' as const
+            roleId: 4,
+            departmentId: '01JP1QG2CBWMMDRH4Y31V86F7V'
         };
 
         it('POST /user/create - should create a new User', async () => {

@@ -20,7 +20,6 @@ export class UserController {
   });
 
   getAllUser = catchAsync(async ({ set, query, request }: any) => {
-    console.log("Controller Request Auth : ", request.userAuth)
     const { isEmailVerified, profile } = query;
     const { page, limit, sortBy, sortOrder, searchField, search } = query;
     const searchOptions: SearchOptions = {
@@ -93,7 +92,7 @@ export class UserController {
   updateUser = catchAsync(async ({ set, body, params }: any) => {
     const { id } = params;
     const { email, username, password, roleId, departmentId } = body;
-    
+
     const existEmail = await this.userSvc.getUserByEmail(email);
     const existUsername = await this.userSvc.getUserByUsername(username);
 

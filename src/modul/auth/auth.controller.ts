@@ -30,7 +30,7 @@ export class AuthController {
   signup = catchAsync(async ({ set, body }: any) => {
     const { email, username, password, roleId, departmentId } = body;
     const user = await this.usersService.createUser(email, username, password, roleId, departmentId);
-    const data = exclude(user, ['password', 'createdAt', 'updatedAt', 'roleId', 'departmentId']);
+    const data = exclude(user, ['password', 'createdAt', 'updatedAt']);
     set.status = HttpStatusEnum.HTTP_201_CREATED;
     return {
       data,

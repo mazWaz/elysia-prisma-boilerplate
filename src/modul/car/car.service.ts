@@ -24,6 +24,7 @@ export class CarsService {
             'release_year',
             'plate_number',
             'status',
+            'departmentId',
             'createdAt',
             'updatedAt'
         ] as Key []
@@ -56,6 +57,7 @@ export class CarsService {
             'release_year',
             'plate_number',
             'status',
+            'departmentId',
             'createdAt',
             'updatedAt'
         ] as Key []
@@ -99,6 +101,7 @@ export class CarsService {
             'release_year',
             'plate_number',
             'status',
+            'departmentId',
             'createdAt',
             'updatedAt'
         ] as Key []

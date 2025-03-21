@@ -26,14 +26,25 @@ export class TokenService {
     elysiaJwt: any,
     secret: string = config.jwt.secret
   ): Promise<string> {
+    const userWithDept = await db.users.findUnique({
+      where: { id: user.id },
+      select: {
+        department: {
+          select: { category: true, province: true, district: true, subDistrict: true }
+        }
+      }
+    });
+
     const payload = {
       sub: user.id,
       name: user.username,
-      deptid: user.departmentId,
+      deptId: user.departmentId,
+      deptCategory: userWithDept?.department?.category,
+      deptProvince: userWithDept?.department?.province,
+      deptDistrict: userWithDept?.department?.district,
+      deptSubDistrict: userWithDept?.department?.subDistrict,
+      roleId: user.roleId,
       email_verified: user.isEmailVerified,
-      
-      roles: user.roleId,
-      picture: null,
       iat: moment().unix(),
       exp: expires.unix(),
       type

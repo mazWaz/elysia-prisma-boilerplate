@@ -1,11 +1,10 @@
 import Elysia, { t } from "elysia";
 import { CarController } from "../../modul/car/car.controller";
 import { 
-    auth,
     checkAuth,
-    checkIsAdmin,
-    checkIsStaff,
-    checkIsSuperAdmin,
+    checkDepartmentAccess,
+    checkDepartmentAssignment,
+    createDepartmentResolver,
     requireRoles
  } from "../../middelware/authCheck";
 import { HttpStatusEnum } from "../../utils/httpStatusCode";
@@ -16,7 +15,6 @@ import {
     UpdateCar,
     UpdateCarResponse
 } from '../../modul/car/car.validate';
-import type { userRole } from "../../config/role";
 import { paginationOptions } from "../../config/prisma";
 import { userQueriesDTO } from "../../modul/user/user.validate";
 
@@ -29,7 +27,7 @@ export const carRoute = new Elysia({
     .onBeforeHandle([checkAuth])
 
     .get('/', carController.getAllCar, {
-        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
+        beforeHandle: [requireRoles('STAFF', 'ADMIN', 'SUPERADMIN')],
         query: t.Object({
             ...paginationOptions,
             ...userQueriesDTO
@@ -38,23 +36,27 @@ export const carRoute = new Elysia({
     })
 
     .get('/getcar/:id', carController.getCarById, {
-        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
+        beforeHandle: [requireRoles('STAFF', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Get Car By ID')
     })
 
     .post('/create', carController.createCar, {
-        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
+        beforeHandle: [requireRoles('STAFF', 'ADMIN', 'SUPERADMIN'),
+        checkDepartmentAssignment
+        ],
         detail: swaggerDetails('Create Car'),
         body: CreateCar,
         response: CreateCarResponse
     })
 
     .patch('/:id', carController.updateCar, {
-        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
+        beforeHandle: [requireRoles('ADMIN', 'SUPERADMIN'),
+            checkDepartmentAccess(createDepartmentResolver('Cars', 'id'))],
         detail: swaggerDetails('Update Car')
     })
 
     .delete('/:id', carController.deleteCar, {
-        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
+        beforeHandle: [requireRoles('ADMIN', 'SUPERADMIN'),
+            checkDepartmentAccess(createDepartmentResolver('Cars', 'id'))],
         detail: swaggerDetails('Delete Car')
     })    

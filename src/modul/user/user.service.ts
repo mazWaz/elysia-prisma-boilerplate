@@ -112,10 +112,10 @@ export class UsersService {
 
   async updateUser<Key extends keyof Users>(
     userId: string,
-    updateBody: Prisma.UsersUpdateInput,
-    keys: Key[] = ['id', 'email', 'username', 'role'] as Key[]
+    updateBody: Prisma.UsersUncheckedUpdateInput,
+    keys: Key[] = ['id', 'email', 'username', 'roleId', 'departmentId'] as Key[]
   ): Promise<Pick<Users, Key> | null> {
-    const user = await this.getUserByid(userId, ['id', 'email', 'username']);
+    const user = await this.getUserByid(userId, ['id', 'email', 'username', 'roleId', 'departmentId']);
 
     if (!user) {
       throw new ApiError(HttpStatusEnum.HTTP_404_NOT_FOUND, 'User not found');
@@ -144,6 +144,8 @@ export class UsersService {
         email: updateBody.email,
         username: updateBody.username,
         password: updateBody.password,
+        roleId: updateBody.roleId,
+        departmentId: updateBody.departmentId
       },
       select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})
     });

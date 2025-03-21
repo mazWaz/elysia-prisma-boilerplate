@@ -1,9 +1,7 @@
-import { error } from 'elysia';
 import ApiError from '../../utils/apiError';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { db } from '../../config/prisma';
 import { Locations, Prisma } from '@prisma/client';
-import { extend } from 'joi';
 
 export class LocationService {
     private static instance: LocationService;

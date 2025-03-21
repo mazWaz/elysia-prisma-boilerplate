@@ -2,7 +2,7 @@ import { Context } from 'elysia';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { catchAsync } from '../../utils/catchAsync';
 import ApiError from '../../utils/apiError';
-import { Location } from '@prisma/client';
+import { Locations } from '@prisma/client';
 import { prismaSearch } from '../../config/prisma';
 import exclude from '../../utils/exclude';
 import { LocationService } from './location.service';
@@ -25,7 +25,7 @@ export class LocationController {
             //include: { detail }
         };
 
-        const location = await prismaSearch('location', searchOptions);
+        const location = await prismaSearch('locations', searchOptions);
         set.status = HttpStatusEnum.HTTP_200_OK;
         if (!location) {
             set.status = HttpStatusEnum.HTTP_500_INTERNAL_SERVER_ERROR;

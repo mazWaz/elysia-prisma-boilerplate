@@ -1,47 +1,48 @@
 import { t } from 'elysia';
 
 export const CreateCar = t.Object({
-    name: t.Optional(
+    name: 
         t.String({
             example: 'Toyota Supra Twin Turbo A80',
             description: 'Name of the car'
-        })
-    ),
-    brand: t.Optional(
+        }),
+    brand:
         t.String({
             example: 'Toyota',
             description: 'Manufacturer of the car'
-        })
-    ),
-    release_year: t.Optional(
+        }),
+    release_year:
         t.Number({
             example: 2002,
             description: 'Year of the car is produced by manufacturer'
-        })
-    ),
-    plate_number: t.Optional(
+        }),
+    plate_number:
         t.String({
             example: 'Toyota',
             description: 'Manufacturer of the car'
-        })
-    ),
-    status: t.Optional(
+        }),
+    status:
         t.String({
             examples: 'Active / Unactive',
             description: 'Choose wherether Active or Unactive'
-        })
-    )
+        }),
+    departmentId:
+        t.String({
+            examples: '01JP76SQWPHRKSBWYP21D96GV9',
+            description: 'Choose wherether Active or Unactive'
+        }),
 });
 
 export const CreateCarResponse = {
     200: t.Object({
         data: t.Object({
-            id: t.Number(),
+            id: t.String(),
             name: t.String(),
             brand: t.String(),
             release_year: t.Number(),
             plate_number: t.String(),
             status: t.String(),
+            departmentId: t.String(),
             createdAt: t.String(),
             updatedAt: t.String(),
         }),
@@ -79,6 +80,12 @@ export const UpdateCar = t.Object({
     status: t.Optional(
         t.String({
             examples: 'Active',
+            description: 'Choose wherether Active or Unactive'
+        })
+    ),
+    departmentId: t.Optional(
+        t.String({
+            examples: '01JP76SQWPHRKSBWYP21D96GV9',
             description: 'Choose wherether Active or Unactive'
         })
     )

@@ -10,6 +10,7 @@ import { userTest } from "./user.route.test";
 import { userCarTest } from "./user_car.route.test";
 import { locationTest } from "./location.route.test";
 import { createTestClient } from "./utils/createTestClient";
+import { roleTest } from "./role.route.test";
 
 interface TestContext {
    refreshToken: string;
@@ -29,11 +30,12 @@ describe('Main test suite', async () => {
   authTest(context);
 
    afterAll( async () =>{
-    await carTest(context);
-    await addressTest(context);
-    await userTest(context);
-    await userCarTest(context);
-    await locationTest(context);
+    // await carTest(context);
+    // await userTest(context);
+    // await addressTest(context);
+    // await userCarTest(context);
+    // await locationTest(context);
+    await roleTest(context);
 
     afterAll( async () => {
     const testClient = createTestClient(app);

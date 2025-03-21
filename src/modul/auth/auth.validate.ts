@@ -5,13 +5,13 @@ export const LoginUserBody = t.Object({
   email: t.Optional(
     t.String({
       format: 'email',
-      example: 'mashu323@mail.com',
+      example: 'basil@macedonian.com',
       description: 'Use Email Or Username'
     })
   ),
   username: t.Optional(
     t.String({
-      example: 'mashu323',
+      example: 'basil',
       description: 'Use Email Or Username'
     })
   ),
@@ -45,6 +45,14 @@ export const SignupUserBody = t.Object({
     pattern: '^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$',
     description:
       'Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.'
+  }),
+  roleId: t.Number({
+    example: '1',
+    description: 'Roles for assign'
+  }),
+  departmentId: t.String({
+    example: '1X92BDJS',
+    description: 'Which department user belong to'
   })
 });
 

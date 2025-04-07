@@ -4,6 +4,12 @@ import {
     checkAuth,
     requireRoles
 } from "../../middelware/authCheck";
+import {
+    CreateRoles,
+    CreateRolesResponse,
+    UpdateRoles,
+    UpdateRolesResponse
+} from '../../modul/role/role.validate';
 import { HttpStatusEnum } from "../../utils/httpStatusCode";
 import { swaggerDetails } from "../../utils/responseHelper";
 import type { userRole } from "../../config/role";
@@ -34,12 +40,15 @@ export const roleRoute = new Elysia({
 
     .post('/create', roleController.createRole, {
        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
-        detail: swaggerDetails('Create Role')
+        detail: swaggerDetails('Create Role'),
+        body: CreateRoles,
+        response: CreateRolesResponse
     })
 
     .patch('/:id', roleController.updateRole, {
        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
-        detail: swaggerDetails('Update Role')
+        detail: swaggerDetails('Update Role'),
+        body: UpdateRoles
     })
 
     .delete('/:id', roleController.deleteRole, {

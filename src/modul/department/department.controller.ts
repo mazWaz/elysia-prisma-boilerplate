@@ -15,14 +15,12 @@ export class DepartmentController {
     }
 
     getAllDepartments = catchAsync(async ({ set, query }: any) => {
-        //const { detail } = query;
         const { page, limit, sortBy, sortOrder, searchField, search } = query;
         const searchOptions = {
             page,
             limit,
             sortBy: { field: sortBy ?? 'createdAt', order: sortOrder },
             search: { field: searchField ?? 'name', value: search }
-            //include: { detail }
         };
 
         const departments = await prismaSearch('departments', searchOptions);

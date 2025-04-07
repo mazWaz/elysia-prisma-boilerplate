@@ -28,8 +28,7 @@ export const CreateCar = t.Object({
         }),
     departmentId:
         t.String({
-            examples: '01JP76SQWPHRKSBWYP21D96GV9',
-            description: 'Choose wherether Active or Unactive'
+            examples: '01JP76SQWPHRKSBWYP21D96GV9'
         }),
 });
 
@@ -96,7 +95,7 @@ export const UpdateCarResponse = {
         data: t.Any(),
         message: t.String({ default: 'Car data has been updated' })
     }),
-    400: t.Object({ message: t.String({ default: 'Data is denied'}) })
+    400: t.Object({ message: t.String({ default: 'Update data is failed'}) })
 };
 
 export const getCarById = {

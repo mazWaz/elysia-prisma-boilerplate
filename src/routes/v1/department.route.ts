@@ -2,12 +2,14 @@ import Elysia, { t } from "elysia";
 import { DepartmentController } from "../../modul/department/department.controller";
 import {
     checkAuth,
-    checkIsUser,
-    checkIsAdmin,
-    checkIsStaff,
-    checkIsSuperAdmin,
     requireRoles
 } from "../../middelware/authCheck";
+import {
+    CreateDepartment,
+    CreateDepartmentResponse,
+    UpdateDeparment,
+    UpdateDepartmentResponse
+} from '../../modul/department/department.validate';
 import { HttpStatusEnum } from "../../utils/httpStatusCode";
 import { swaggerDetails } from "../../utils/responseHelper";
 import type { userRole } from "../../config/role";
@@ -39,11 +41,14 @@ export const departmentRoute = new Elysia({
     .post('/create', departmentContoller.createDepartment, {
        // beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')], // example using role based check, assuming getUserById is accessible to USER role
         detail: swaggerDetails('Create Department'),
+        body: CreateDepartment,
+        response: CreateDepartmentResponse
     })
 
     .patch('/:id', departmentContoller.updateDepartment, {
        // beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')], // example using role based check, assuming getUserById is accessible to USER role
-        detail: swaggerDetails('Update Department')
+        detail: swaggerDetails('Update Department'),
+        body: UpdateDeparment
     })
 
     .delete('/:id', departmentContoller.deleteDepartment, {

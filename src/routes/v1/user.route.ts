@@ -5,11 +5,13 @@ import {
   checkDepartmentAccess,
   checkDepartmentAssignment,
   createDepartmentResolver,
-  requireRoles // import requireRoles
+  requireRoles
 } from '../../middelware/authCheck';
 import {
   CreateUser,
-  CreateUserResponse
+  CreateUserResponse,
+  UpdateUser,
+  UpdateUserResponse
 } from '../../modul/user/user.validate';
 import { swaggerDetails } from '../../utils/responseHelper';
 import { paginationOptions } from '../../config/prisma';
@@ -52,7 +54,9 @@ export const userRoute = new Elysia({
       requireRoles('ADMIN', 'SUPERADMIN'),
       checkDepartmentAccess(createDepartmentResolver('Users', 'id'))
     ],
-    detail: swaggerDetails('Update User')
+    detail: swaggerDetails('Update User'),
+    body: UpdateUser,
+    response: UpdateUserResponse
   })
 
   .delete('/:id', user.deleteUser, {

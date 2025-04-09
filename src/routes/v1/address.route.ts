@@ -4,6 +4,12 @@ import {
     checkAuth,
     requireRoles
 } from '../../middelware/authCheck';
+import {
+    CreateAddress,
+    CreateAddressResponse,
+    UpdateAddress,
+    UpdateAddressResponse
+} from '../../modul/address/address.validate';
 import { HttpStatusEnum } from "../../utils/httpStatusCode";
 import { swaggerDetails } from "../../utils/responseHelper";
 import type { userRole } from "../../config/role";
@@ -34,12 +40,16 @@ export const userAddressRoute = new Elysia({
 
     .post('/create', address.createAddress, {
         beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
-        detail: swaggerDetails('Create address')
+        detail: swaggerDetails('Create address'),
+        body: CreateAddress,
+        response: CreateAddressResponse
     })
 
     .patch('/:id', address.updateAddress, {
         beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
-        detail: swaggerDetails('Update address')
+        detail: swaggerDetails('Update address'),
+        body: UpdateAddress,
+        response: UpdateAddressResponse
     })
 
     .delete('/:id', address.deleteAddress, {

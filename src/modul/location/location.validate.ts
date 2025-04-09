@@ -41,10 +41,10 @@ export const updateLocation = t.Object({
     })
 });
 
-export const UpdateCarResponse = {
+export const UpdateLocationResponse = {
     200: t.Object({
         data: t.Any(),
-        message: t.String({ default: 'Car data has been updated' })
+        message: t.String({ default: 'Location data has been updated' })
     }),
-    400: t.Object({ message: t.String({ default: 'Data is denied'}) })
+    400: t.Object({ message: t.String({ default: 'Update data is failed'}) })
 };

@@ -111,7 +111,8 @@ export class UserController {
     
     set.status = HttpStatusEnum.HTTP_200_OK;
     return {
-      data
+      data,
+      message: 'User data has been updated'
     };
   })
 

@@ -89,7 +89,8 @@ export class DepartmentController {
 
         set.status = HttpStatusEnum.HTTP_200_OK;
         return {
-            data
+            data,
+            message: 'Department data has been updated'
         };
     })
 

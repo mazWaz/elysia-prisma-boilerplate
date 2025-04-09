@@ -80,7 +80,8 @@ export class RoleController {
 
         set.status = HttpStatusEnum.HTTP_200_OK;
         return {
-            data
+            data,
+            message: 'Role data has been updated'
         };
     });
 

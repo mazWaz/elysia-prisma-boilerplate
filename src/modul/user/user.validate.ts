@@ -51,39 +51,43 @@ export const CreateUserResponse = {
   400: t.Object({ message: t.String({ default: 'Insert userdata failed.'})})
 }
 
-export const UpdateUser = {
-  email: 
+export const UpdateUser = t.Object({
+  email: t.Optional(
       t.String({
-        example: 'basil@the.macedonian',
-        description: 'Valid email that need to be verified after',
-        validate: (value: string) => {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(value)) {
-            throw new Error('Invalid email format');
+          example: 'basil@the.macedonian',
+          description: 'Valid email that need to be verified after',
+          validate: (value: string) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+              throw new Error('Invalid email format');
+            }
           }
-        }
-      }),
-  username: 
+      })),
+  username: t.Optional(
       t.String({
-        examples: 'basil',
-        description: 'Username for login'
-      }),
-  password: 
+          example: 'basil',
+          description: 'Username for login'
+      })
+  ),
+  password: t.Optional(
       t.String({
-        example: 'B4silth3M@cEdon1an',
-        description: 'You need to be atleast have number, special characters, and letter uppercase on you password'
-      }),
-  roleId: 
+          example: 'B4silth3M@cEdon1an',
+          description: 'You need to be atleast have number, special characters, and letter uppercase on your password'
+      })
+  ),
+  roleId: t.Optional(
       t.Number({
-        example: 1,
-        description: "Set by Admin"
-      }),
-  departmentId: 
+          example: 1,
+          description: 'Set by Admin'
+      })
+  ),
+  departmentId: t.Optional(
       t.String({
-        example: '01XIWJFJA34',
-        description: 'Department id that user working at'
-  })
-}
+          examples: 'Active',
+          description: 'Choose wherether Active or Unactive'
+      })
+  )
+});
 
 export const UpdateUserResponse = {
   200: t.Object({

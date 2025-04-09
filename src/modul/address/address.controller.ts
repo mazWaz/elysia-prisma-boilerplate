@@ -83,7 +83,8 @@ export class AddressController {
 
         set.status = HttpStatusEnum.HTTP_200_OK;
         return{
-            data
+            data,
+            message: 'Address data has been updated'
         };
     })
 

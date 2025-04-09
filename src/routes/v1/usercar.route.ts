@@ -4,11 +4,17 @@ import {
     checkAuth,
     requireRoles
 } from '../../middelware/authCheck';
+import {
+    CreateUser,
+    CreateUserResponse,
+    UpdateUser,
+    UpdateUserResponse
+} from '../../modul/user/user.validate';
 import { HttpStatusEnum } from "../../utils/httpStatusCode";
 import { swaggerDetails } from "../../utils/responseHelper";
 import type { userRole } from "../../config/role";
 import { paginationOptions } from "../../config/prisma";
-import { CreateUser, userQueriesDTO } from "../../modul/user/user.validate";
+import { userQueriesDTO } from "../../modul/user/user.validate";
 import { UserCarController } from "../../modul/usercar/usercar.controller";
 
 const usercar = new UserCarController();

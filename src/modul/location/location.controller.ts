@@ -78,7 +78,8 @@ export class LocationController {
 
         set.status = HttpStatusEnum.HTTP_200_OK;
         return {
-            data
+            data,
+            message: 'Location data has been updated'
         };
     });
 

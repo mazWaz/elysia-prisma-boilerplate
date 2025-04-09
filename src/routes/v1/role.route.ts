@@ -48,7 +48,8 @@ export const roleRoute = new Elysia({
     .patch('/:id', roleController.updateRole, {
        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Update Role'),
-        body: UpdateRoles
+        body: UpdateRoles,
+        response: UpdateRolesResponse
     })
 
     .delete('/:id', roleController.deleteRole, {

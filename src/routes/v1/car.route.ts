@@ -52,7 +52,9 @@ export const carRoute = new Elysia({
     .patch('/:id', carController.updateCar, {
         beforeHandle: [requireRoles('ADMIN', 'SUPERADMIN'),
             checkDepartmentAccess(createDepartmentResolver('Cars', 'id'))],
-        detail: swaggerDetails('Update Car')
+        detail: swaggerDetails('Update Car'),
+        body: UpdateCar,
+        response: UpdateCarResponse
     })
 
     .delete('/:id', carController.deleteCar, {

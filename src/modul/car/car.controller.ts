@@ -91,7 +91,8 @@ export class CarController {
 
         set.status = HttpStatusEnum.HTTP_200_OK;
         return {
-            data
+            data,
+            message: 'Car data has been updated'
         };
     })
 

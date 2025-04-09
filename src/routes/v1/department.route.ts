@@ -48,7 +48,8 @@ export const departmentRoute = new Elysia({
     .patch('/:id', departmentContoller.updateDepartment, {
        // beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')], // example using role based check, assuming getUserById is accessible to USER role
         detail: swaggerDetails('Update Department'),
-        body: UpdateDeparment
+        body: UpdateDeparment,
+        response: UpdateDepartmentResponse
     })
 
     .delete('/:id', departmentContoller.deleteDepartment, {

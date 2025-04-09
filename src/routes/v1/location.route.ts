@@ -2,9 +2,6 @@ import Elysia, { t } from "elysia";
 import { LocationController } from "../../modul/location/location.controller";
 import {
     checkAuth,
-    checkIsAdmin,
-    checkIsStaff,
-    checkIsSuperAdmin,
     requireRoles
 } from "../../middelware/authCheck";
 import { HttpStatusEnum } from "../../utils/httpStatusCode";
@@ -13,7 +10,7 @@ import {
     createLocation,
     CreateLocationResponse,
     updateLocation,
-    UpdateCarResponse
+    UpdateLocationResponse
 } from '../../modul/location/location.validate';
 import type { userRole } from "../../config/role";
 import { paginationOptions } from "../../config/prisma";
@@ -36,6 +33,11 @@ export const locationRoute = new Elysia({
         detail: swaggerDetails('Get all location', true)
     })
 
+    .get('/getlocation/:id', locationController.getLocationById, {
+        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
+        detail: swaggerDetails('Get location by ID')
+    })
+
     .post('/create', locationController.createLocation, {
         beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
         detail: swaggerDetails('Add location'),
@@ -43,14 +45,11 @@ export const locationRoute = new Elysia({
         response: CreateLocationResponse
     })
 
-    .get('/getlocation/:id', locationController.getLocationById, {
-        beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
-        detail: swaggerDetails('Get location by ID')
-    })
-
     .patch('/:id', locationController.updateLocation, {
         beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
-        detail: swaggerDetails('Update location')
+        detail: swaggerDetails('Update location'),
+        body: updateLocation,
+        response: UpdateLocationResponse
     })
 
     .delete('/:id',locationController.deleteLocation, {

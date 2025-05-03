@@ -1,0 +1,32 @@
+# use official Bun image
+FROM oven/bun:canary-debian AS base
+WORKDIR /usr/src/app/
+RUN apt-get update -y && \
+    apt-get install -y openssl libssl-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+FROM base AS install
+RUN mkdir -p /temp/dev
+COPY package.json bun.lockb /temp/dev/
+RUN cd /temp/dev && bun install --frozen-lockfile
+
+
+FROM base AS prisma
+COPY --from=install /temp/dev/node_modules node_modules
+COPY . .
+ENV NODE_ENV=development
+RUN bun prisma generate
+
+
+FROM base AS release
+WORKDIR /usr/src
+
+COPY --from=install /temp/dev/node_modules node_modules
+
+COPY . .
+RUN bun prisma generate
+
+ENV NODE_ENV=development
+USER bun
+EXPOSE 3000/tcp
+ENTRYPOINT ["sh", "-c", "bun run dev"]

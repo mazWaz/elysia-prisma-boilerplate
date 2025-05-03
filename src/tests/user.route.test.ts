@@ -25,7 +25,7 @@ export const userTest = async(context: TestContext) => {
             username: `breath_${testId}`,
             password: 'B4silth3M@cEdon1an',
             roleId: 3,
-            departmentId: '01JP1QG2CBWMMDRH4Y31V86F7V'
+            departmentId: '01JT0B0R75G7A2MFM9YCJCM9JT'
         };
 
         const userBodyUpdate = {
@@ -33,7 +33,7 @@ export const userTest = async(context: TestContext) => {
             username: `breath1_${testId}`,
             password: 'B4silth3M@cEdon1an',
             roleId: 4,
-            departmentId: '01JP1QG2CBWMMDRH4Y31V86F7V'
+            departmentId: '01JT0B0R75G7A2MFM9YCJCM9JT'
         };
 
         it('POST /user/create - should create a new User', async () => {

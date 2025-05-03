@@ -21,13 +21,13 @@ export const userCarTest = async(context: TestContext) => {
         let testUserCarId: string;
 
         const userCarBodyCreate = {
-            carId: '01JPSAWXQP6S4D2EPRMV143M01',
-            userId: '01JP4NSXHM6ZRGHSPFQBKRN9TH'
+            carId: '01JT0B0R75G7A2MFM9YCJ82KQI',
+            userId: '01JTABCDEFGHIJKLMNOPQRSTUV'
         };
 
         const userCarBodyUpdate = {
-            carId: '01JPSAWXQP6S4D2EPRMV143M01',
-            userId: '01JP4FQ20CESWTPJV155E1QYKR'
+            carId: '01JT0B0R75G7A2MFM9YCJ82KQI',
+            userId: '01JTABCDEFGHIJKLMNOPQRSTUV'
         };
 
         it('POST /usercar/create - should create a new user car', async () => {

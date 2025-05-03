@@ -87,7 +87,7 @@ export const app = new Elysia({})
     })
   )
 
-  // Helmet security (might conflict with swagger)
+  // Helmet secudasdasdrity (might conflict with swagger)
   .use(
     helmet({
       contentSecurityPolicy: {
@@ -116,7 +116,10 @@ export const app = new Elysia({})
     })
   )
 
-  .use(rateLimit({ max: config.env === 'production' ? 8 : 1000 }))
+  .use(rateLimit({
+    max: config.env === 'production' ? 8 : 1000,
+    skip: (context) => process.env.NODE_ENV === 'test'
+  }))
 
   .use(bearer())
 

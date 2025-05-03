@@ -55,27 +55,36 @@ export class UserCarService{
     }
 
     async createUsercar(carId: string, userId: string) {
-        const sameCar = await db.userCars.findUnique({
-            where: { carId: carId },
+        console.log(userId)
+        const user = await db.users.findUnique({
+            where: { id: userId }
         });
-
-        if (sameCar) {
-            throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Car or User already registered');
+        if (!user) {
+            throw new ApiError(HttpStatusEnum.HTTP_404_NOT_FOUND, "User not found");
         }
-
-        const sameUser = await db.userCars.findUnique({
-            where: { userId: userId },
+    
+        const car = await db.cars.findUnique({
+            where: { id: carId }
         });
-
-        if (sameUser) {
-            throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Car or User already registered');
+        if (!car) {
+            throw new ApiError(HttpStatusEnum.HTTP_404_NOT_FOUND, 'Car not found');
         }
-
-        const createUsercar = await db.userCars.create({
-            data: { carId, userId},
+        
+        const existingUserCar = await db.userCars.findFirst({
+            where: {
+                AND: [
+                    { carId: carId },
+                    { userId: userId }
+                ]
+            }
         });
-
-        return createUsercar;
+        if (existingUserCar) {
+            throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'User already has this car registered');
+        }
+    
+        return await db.userCars.create({
+            data: { carId, userId }
+        });
     }
 
     async updateUsercar<Key extends keyof UserCars>(
@@ -88,12 +97,13 @@ export class UserCarService{
             'updatedAt'
         ] as Key []
     ): Promise<Pick<UserCars, Key> | null> {
-        const usercar = await this.getUsercarById(usercarId, ['carId', 'userId']);
-
-        if (!usercar) {
-            throw new ApiError(HttpStatusEnum.HTTP_404_NOT_FOUND, 'Data ID not found')
+        const existingUserCar = await this.getUsercarById(usercarId);
+        
+        if (!existingUserCar) {
+            throw new ApiError(HttpStatusEnum.HTTP_404_NOT_FOUND, 'Usercar ID is not found');
         }
 
+        
         const updateUsercar = await db.userCars.update({
             where: { id: usercarId },
             data: updateBody,

@@ -27,17 +27,16 @@ export const carTest = async(context: TestContext) => {
             release_year: 2009, 
             plate_number: `N1${testId}16A`, 
             status: 'Active',
-            departmentId: '01JP4B33AM5ENJ3PRF97Q0Y1DY'
-
+            departmentId: '01JT0B0R75G7A2MFM9YCJCM9JT'
         };
 
         const carBodyUpdate = {
-            name: 'Nissan Skyline GTR', 
+            name: 'Nissan Skyline SGTR', 
             brand: 'Nissan',
             release_year: 2005, 
             plate_number: `S3${testId}3X`,
             status: 'Active',
-            departmentId: '01JP4B33AM5ENJ3PRF97Q0Y1DY'
+            departmentId: '01JT0B0R75G7A2MFM9YCJCM9JT'
         };
     
         it('POST /car/create - should create a new car', async () => {

@@ -7,8 +7,10 @@ import { UserRole, userRole } from '../config/role';
 import { db } from '../config/prisma';
 
 /**
+ * 
+ * I tried use you and i cry, to drown me
  * Middleware to check user authentication based on JWT token.
- * It verifies the token from the Bearer header and attaches the user payload to the request context.
+ * It verifies the tsdsdasdoken from the Bearer header and attaches the user payload to the request context.
  *
  * @param {any} context - Elysia context object containing bearer token, jwt verifier, error handler, and request object.
  * @returns {Promise<void | Elysia.ErrorHandler>} - Resolves if authentication is successful, otherwise returns an error handler.
@@ -193,7 +195,7 @@ export const checkDepartmentAssignment = async (context: any) => {
  *
  * @param {(context: any) => Promise<{ targetDeptId: string | null; entity: any } | null>} getEntityAndDeptId - Resolver function to get target department ID and entity.
  * @returns {(context: any) => Promise<void | Elysia.ErrorHandler | undefined>} - Middleware handler function.
- */
+ */  
 export const checkDepartmentAccess =
   (
     getEntityAndDeptId: (

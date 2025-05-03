@@ -53,7 +53,6 @@ export const CreateCarResponse = {
 export const UpdateCar = t.Object({
     name: t.Optional(
         t.String({
-            format: 'name',
             example: 'Toyota Supra Twin Turbo A80',
             description: 'Name of the car'
         })
@@ -65,7 +64,7 @@ export const UpdateCar = t.Object({
         })
     ),
     release_year: t.Optional(
-        t.String({
+        t.Number({
             example: 2003,
             description: 'Year of the car is produced by manufacturer'
         })

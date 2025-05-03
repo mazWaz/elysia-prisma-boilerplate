@@ -1,7 +1,0 @@
-model reg_regencies {
-    id          String          @id @default(uuid())
-    provinceId  String      
-    name        String
-    Province    reg_provinces   @relation("RegencyProvincefk", fields: [provinceId], references: [id])
-    District    reg_districts[]  @relation("DistrictRegencyfk")
-}

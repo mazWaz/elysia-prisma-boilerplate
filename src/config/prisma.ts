@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from './prisma-client';
 import { t } from 'elysia';
 
 export const db = new PrismaClient();

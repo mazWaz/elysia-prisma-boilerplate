@@ -26,7 +26,8 @@ export const locationTest = async(context: TestContext) => {
         };
 
         const locationBodyUpdate = {
-            location: "-7.2913648,112.8347603"
+            location: "-7.2913648,112.8347603",
+            user_carId: "01JPVNHVZKFZMYNYSPJH2TFQ6D"
         };
 
         it('POST /location/create - should create a new location', async () => {

@@ -28,19 +28,19 @@ interface TestContext {
 
 describe('Main test suite', async () => {
   authTest(context);
-
+  
    afterAll( async () =>{
-    // await carTest(context);
-    // await userTest(context);
-    // await addressTest(context);
-    // await userCarTest(context);
-    // await locationTest(context);
+    await carTest(context);
+    await userTest(context);
+    await addressTest(context);
+    await userCarTest(context);
     await roleTest(context);
-
+    await locationTest(context);
+    
     afterAll( async () => {
     const testClient = createTestClient(app);
       
-      it('POST /v1/auth/logout - should invalidate refresh token', async () => {
+      it('POST /v1/auth/logout - should invalidate as long its matter refresh token', async () => {
         const response = await testClient.post('/v1/auth/logout', {
           refreshToken: context.refreshToken,
         });

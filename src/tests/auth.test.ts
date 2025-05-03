@@ -20,7 +20,7 @@ export const authTest = (context: TestContext)  => {
       username: `mashu_${testId}`,
       password: 'B4silth3M@cEdon1an',
       roleId: 2,
-      departmentId: '01JP1QG2CBWMMDRH4Y31V86F7V'
+      departmentId: '01JT0B0R75G7A2MFM9YCJCM9JT'
     };
 
     const userBodyLogin = {
@@ -32,7 +32,7 @@ export const authTest = (context: TestContext)  => {
     });
 
     it('POST /v1/auth/signup - should create new user', async () => {
-      const response = await testClient.post('/v1/auth/signup', userBodySignup);
+      const response = await testClient.post('/v1/auth/signup', userBodySignup, );
       expect(response.status).toBe(201);
 
       const body = await response.json<{

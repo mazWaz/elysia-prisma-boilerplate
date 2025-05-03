@@ -5,11 +5,11 @@ import {
     requireRoles
 } from '../../middelware/authCheck';
 import {
-    CreateUser,
-    CreateUserResponse,
-    UpdateUser,
-    UpdateUserResponse
-} from '../../modul/user/user.validate';
+    CreateUserCar,
+    CreateUserCarResponse,
+    UpdateUserCar,
+    UpdateUserCarResponse
+} from '../../modul/usercar/usercar.validate';
 import { HttpStatusEnum } from "../../utils/httpStatusCode";
 import { swaggerDetails } from "../../utils/responseHelper";
 import type { userRole } from "../../config/role";
@@ -41,12 +41,16 @@ export const usercarRoute = new Elysia({
 
     .post('/create', usercar.createUsercar, {
         beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
-        detail: swaggerDetails('Create usercar')
+        detail: swaggerDetails('Create usercar'),
+        body: CreateUserCar,
+        response: CreateUserCarResponse
     })
 
     .patch('/:id', usercar.updateUsercar, {
         beforeHandle: [requireRoles('USER', 'ADMIN', 'SUPERADMIN')],
-        detail: swaggerDetails('Update usercar')
+        detail: swaggerDetails('Update usercar'),
+        body: UpdateUserCar,
+        response: UpdateUserCarResponse
     })
 
     .delete('/:id', usercar.deleteUsercar, {

@@ -24,6 +24,10 @@ export const CreateAddress = t.Object({
     province: 
         t.String({
             example: 'Jawa Timur'
+        }),
+    userId:
+        t.String({
+            example: '01JT30NFXNFRQ98HQDSTJ1E3RY'
         })
 });
 
@@ -74,6 +78,11 @@ export const UpdateAddress = t.Object({
     province: t.Optional(
         t.String({
             example: 'Jawa Timur'
+        })
+    ),
+    userId: t.Optional(
+        t.String({
+            examples: '01JT30NFXNFRQ98HQDSTJ1E3RY'
         })
     )
 });

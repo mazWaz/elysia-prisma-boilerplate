@@ -1,0 +1,146 @@
+model Cars {
+  id           String      @id @default(ulid())
+  name         String
+  brand        String
+  release_year Int
+  plate_number String      @unique
+  status       String
+  departmentId String
+  user_car     UserCars?   @relation("UserCarsfk")
+  department   Departments @relation("CarDeparmentfk", fields: [departmentId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Departments {
+  id          String   @id @default(ulid())
+  name        String
+  address     String
+  category    Category @default(POLRES)
+  Users       Users[]  @relation("UserDepartmentfk")
+  Cars        Cars[]   @relation("CarDeparmentfk")
+  province    String
+  district    String
+  subDistrict String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("Departments")
+}
+
+enum Category {
+  POLRI
+  POLDA
+  POLRES
+  POLSEK
+}
+
+model Locations {
+  id         String   @id @default(ulid())
+  location   String
+  user_carId String
+  userCar    UserCars @relation("UserCarLocationfk", fields: [user_carId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model reg_districts {
+  id        String        @id @default(uuid())
+  regencyId String
+  name      String
+  regency   reg_regencies @relation("DistrictRegencyfk", fields: [regencyId], references: [id])
+}
+
+model reg_provinces {
+  id      String          @id @default(uuid())
+  name    String
+  Regency reg_regencies[] @relation("RegencyProvincefk")
+}
+
+model reg_regencies {
+  id         String          @id @default(uuid())
+  provinceId String
+  name       String
+  Province   reg_provinces   @relation("RegencyProvincefk", fields: [provinceId], references: [id])
+  District   reg_districts[] @relation("DistrictRegencyfk")
+}
+
+model Roles {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  Users       Users[]  @relation("UserRolefk")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Token {
+  id          String    @id @default(ulid())
+  token       String
+  type        TokenType
+  expires     DateTime
+  blacklisted Boolean
+  createdAt   DateTime  @default(now())
+  userId      String
+  user        Users     @relation("UserTokens", fields: [userId], references: [id])
+}
+
+enum TokenType {
+  ACCESS
+  REFRESH
+  RESET_PASSWORD
+  VERIFY_EMAIL
+}
+
+model UserAddress {
+  id        String   @id @default(ulid())
+  address   String
+  rt        Int
+  rw        Int
+  district  String
+  city      String
+  province  String
+  userId    String   @unique
+  user      Users    @relation("UserAddress", fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserCars {
+  id        String      @id @default(ulid())
+  carId     String      @unique
+  userId    String      @unique
+  user      Users       @relation("UsersCarfk", fields: [userId], references: [id])
+  car       Cars        @relation("UserCarsfk", fields: [carId], references: [id])
+  location  Locations[] @relation("UserCarLocationfk")
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Users {
+  id              String       @id @default(ulid())
+  email           String       @unique
+  username        String       @unique
+  password        String
+  isEmailVerified Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  roleId          Int
+  departmentId    String
+  role            Roles        @relation("UserRolefk", fields: [roleId], references: [id])
+  department      Departments  @relation("UserDepartmentfk", fields: [departmentId], references: [id])
+  tokens          Token[]      @relation("UserTokens")
+  address         UserAddress? @relation("UserAddress")
+  car             UserCars?    @relation("UsersCarfk")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  output        = "../src/config/prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}

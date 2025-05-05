@@ -19,7 +19,7 @@ RUN bun prisma generate
 
 
 FROM base AS release
-WORKDIR /usr/src
+WORKDIR /usr/src/app
 
 COPY --from=install /temp/dev/node_modules node_modules
 
@@ -29,9 +29,12 @@ RUN bun prisma generate
 ENV NODE_ENV=development
 USER bun
 EXPOSE 3000/tcp
-ENTRYPOINT ["sh", "-c", "set -e  && \
+ENTRYPOINT ["sh", "-c", "set -e && \
+# Re-construct and export DATABASE_URL using current env vars
+export DATABASE_URL=\"postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}\" && \
+echo 'Re-exported DATABASE_URL based on overrides:' $DATABASE_URL && \
 echo 'Running migrations...' && \
-bun run prisma migrate deploy  && \
+bun run prisma migrate deploy && \
 echo 'Running seed...' && \
 bun run ./seed.ts && \
 echo 'Starting test..' && \

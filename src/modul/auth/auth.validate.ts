@@ -5,13 +5,13 @@ export const LoginUserBody = t.Object({
   email: t.Optional(
     t.String({
       format: 'email',
-      example: 'basil@macedonian.com',
+      example: 'basilius@macedonian.com',
       description: 'Use Email Or Username'
     })
   ),
   username: t.Optional(
     t.String({
-      example: 'basilius',
+      example: 'basil',
       description: 'Use Email Or Username'
     })
   ),

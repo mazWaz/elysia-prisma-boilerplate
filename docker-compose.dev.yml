@@ -1,23 +1,31 @@
 services:
-  elysia_app:
-    container_name: elysia_dev
-    build: 
-      context: .
-      dockerfile: Dockerfile.dev
-    restart: always
-    ports:
-      - 3000:3000
-    # env_file: .env
-    environment:
-      - DATABASE_HOST=db_postgis_dev
-    volumes:
-      - ../:/usr/src/app/
-      - /usr/src/app/node_modules
-    networks:
-      - nexus_network
-    depends_on:
-      database:
-        condition: service_started
+  # elysia_app:
+  #   container_name: elysia_dev
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
+  #   env_file: .env
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=1 
+  #     - DATABASE_HOST=db_postgis_dev
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   develop:
+  #     watch:
+  #       - action: sync
+  #         path: ./
+  #         target: /usr/src/app
+  #       - action: rebuild
+  #         path: ./package.json
+  #   networks:
+  #     - nexus_network
+  #   depends_on:
+  #     database:
+  #       condition: service_started
   
   database:
     container_name: db_postgis_dev

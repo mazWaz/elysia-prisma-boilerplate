@@ -19,7 +19,7 @@ RUN bun prisma generate
 
 
 FROM base AS release
-WORKDIR /usr/src
+WORKDIR /usr/src/app
 
 COPY --from=install /temp/dev/node_modules node_modules
 
@@ -29,4 +29,12 @@ RUN bun prisma generate
 ENV NODE_ENV=development
 USER bun
 EXPOSE 3000/tcp
-ENTRYPOINT ["sh", "-c", "bun run dev"]
+ENTRYPOINT ["sh", "-c", "set -e  && \
+echo 'Running migrations...' && \
+bun run prisma migrate deploy  && \
+echo 'Running seed...' && \
+bun run ./seed.ts && \
+echo 'Starting test..' && \
+bun test && \
+echo 'Starting application...' && \
+exec bun run dev"]

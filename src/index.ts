@@ -16,7 +16,16 @@ import { rateLimit } from 'elysia-rate-limit';
 import bearer from '@elysiajs/bearer';
 import moment from 'moment';
 
-const app = new Elysia({})
+export const app = new Elysia({})
+.onParse(async ({ request, contentType }) => {
+  try {
+    if (contentType === 'application/json') {
+      return await request.json();
+    }
+  } catch (error) {
+    return request.text();
+  }
+})
   //Server State
   .state('maintenanceMode', config.maintenanceMode === 'true' || false)
   .state('timezone', String(Bun.env.TZ || 'Asia/Jakarta'))
@@ -78,7 +87,7 @@ const app = new Elysia({})
     })
   )
 
-  // Helmet security (might conflict with swagger)
+  // Helmet secudasdasdrity (might conflict with swagger)
   .use(
     helmet({
       contentSecurityPolicy: {
@@ -107,7 +116,10 @@ const app = new Elysia({})
     })
   )
 
-  .use(rateLimit({ max: config.env === 'production' ? 8 : 15 }))
+  .use(rateLimit({
+    max: config.env === 'production' ? 8 : 1000,
+    skip: (context) => process.env.NODE_ENV === 'test'
+  }))
 
   .use(bearer())
 

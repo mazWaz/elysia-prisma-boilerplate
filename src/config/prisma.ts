@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from './prisma-client';
 import { t } from 'elysia';
 
 export const db = new PrismaClient();
@@ -28,8 +28,6 @@ export const prismaSearch = async <T extends keyof PrismaClient>(
   options: SearchOptions
 ) => {
   const { sortBy, limit = 25, page = 1, search, include } = options;
-
-  console.log('options', options);
 
   const skip = limit * (page - 1);
 

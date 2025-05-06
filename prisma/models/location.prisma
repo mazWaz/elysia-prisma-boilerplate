@@ -1,0 +1,8 @@
+model Locations {
+  id                    String          @id @default(ulid())
+  location              String
+  user_carId            String          
+  userCar               UserCars        @relation("UserCarLocationfk", fields: [user_carId], references: [id])
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+}

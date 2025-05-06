@@ -1,7 +1,7 @@
-import { Role } from '@prisma/client';
+import { Roles } from '@prisma/client';
 
 export interface UserFind {
   name: string;
-  role: Role;
+  role: Roles;
   verified: boolean;
 }

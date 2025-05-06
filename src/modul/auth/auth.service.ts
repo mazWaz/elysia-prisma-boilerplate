@@ -1,6 +1,6 @@
 import { UsersService } from './../user/user.service';
 import { TokenService } from './token.service';
-import { Role, TokenType, User } from '@prisma/client';
+import { Roles, TokenType, Users } from '@prisma/client';
 import exclude from '../../utils/exclude';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import ApiError from '../../utils/apiError';
@@ -49,7 +49,7 @@ export class AuthService {
         data: { blacklisted: true }
       });
 
-      return this.tokenService.generateAuthTokens(user as User, elysia_jwt);
+      return this.tokenService.generateAuthTokens(user as Users, elysia_jwt);
     } catch (error) {
       throw new ApiError(HttpStatusEnum.HTTP_401_UNAUTHORIZED, 'Please authenticate');
     }
@@ -77,13 +77,14 @@ export class AuthService {
   async loginWithUsernameAndPassword(
     username: string,
     password: string
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<Omit<Users, 'password'>> {
     const user = await this.usersService.getUserByUsername(username, [
       'id',
       'username',
       'email',
       'password',
-      'role',
+      'roleId',
+      'departmentId',
       'isEmailVerified',
       'createdAt',
       'updatedAt'
@@ -108,13 +109,14 @@ export class AuthService {
   async loginWithEmailAndPassword(
     email: string,
     password: string
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<Omit<Users, 'password'>> {
     const user = await this.usersService.getUserByEmail(email, [
       'id',
       'username',
       'email',
       'password',
-      'role',
+      'roleId',
+      'departmentId',
       'isEmailVerified',
       'createdAt',
       'updatedAt'

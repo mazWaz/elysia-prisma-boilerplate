@@ -1,23 +1,23 @@
-import { Role } from '@prisma/client';
+import { Roles } from '@prisma/client';
 import { t } from 'elysia';
 
 export const LoginUserBody = t.Object({
   email: t.Optional(
     t.String({
       format: 'email',
-      example: 'mashu323@mail.com',
+      example: 'basilius@macedonian.com',
       description: 'Use Email Or Username'
     })
   ),
   username: t.Optional(
     t.String({
-      example: 'mashu323',
+      example: 'basil',
       description: 'Use Email Or Username'
     })
   ),
   password: t.String({
     minLength: 8,
-    example: 'Password123!',
+    example: 'B4silth3M@cEdon1an',
     pattern: '^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$',
     description:
       'Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.'
@@ -29,26 +29,30 @@ export const SignupUserBody = t.Object({
   email: t.Optional(
     t.String({
       format: 'email',
-      example: 'mashu323@mail.com',
+      example: 'basil@macedonian.com',
       description: 'Use Email Or Username'
     })
   ),
   username: t.Optional(
     t.String({
-      example: 'mashu323',
+      example: 'basilius',
       description: 'Use Email Or Username'
     })
   ),
   password: t.String({
     minLength: 8,
-    example: 'Password123!',
+    example: 'B4silth3M@cEdon1an',
     pattern: '^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$',
     description:
       'Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.'
   }),
-  role: t.Union([t.Literal(Role.SUPERADMIN), t.Literal(Role.ADMIN), t.Literal(Role.USER)], {
-    example: 'ADMIN',
-    description: 'Assign Role user by Super Admin Or Admin'
+  roleId: t.Number({
+    example: '1',
+    description: 'Roles for assign'
+  }),
+  departmentId: t.String({
+    example: '1X92BDJS',
+    description: 'Which department user belong to'
   })
 });
 

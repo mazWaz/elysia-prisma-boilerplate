@@ -1,4 +1,4 @@
-import { Token, TokenType, User } from '@prisma/client';
+import { Token, TokenType, Users } from '@prisma/client';
 import { Moment } from 'moment';
 import config from '../../config/config';
 import moment from 'moment';
@@ -20,18 +20,31 @@ export class TokenService {
   }
 
   async generateToken(
-    user: User,
+    user: Users,
     expires: Moment,
     type: TokenType,
     elysiaJwt: any,
     secret: string = config.jwt.secret
   ): Promise<string> {
+    const userWithDept = await db.users.findUnique({
+      where: { id: user.id },
+      select: {
+        department: {
+          select: { category: true, province: true, district: true, subDistrict: true }
+        }
+      }
+    });
+
     const payload = {
       sub: user.id,
       name: user.username,
+      deptId: user.departmentId,
+      deptCategory: userWithDept?.department?.category,
+      deptProvince: userWithDept?.department?.province,
+      deptDistrict: userWithDept?.department?.district,
+      deptSubDistrict: userWithDept?.department?.subDistrict,
+      roleId: user.roleId,
       email_verified: user.isEmailVerified,
-      roles: user.role,
-      picture: null,
       iat: moment().unix(),
       exp: expires.unix(),
       type
@@ -70,7 +83,7 @@ export class TokenService {
     return tokenData;
   }
 
-  async generateAuthTokens(user: User, elysia_jwt: any): Promise<AuthTokensResponse> {
+  async generateAuthTokens(user: Users, elysia_jwt: any): Promise<AuthTokensResponse> {
     const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
     const accessToken = await this.generateToken(
       user,

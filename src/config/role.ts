@@ -1,16 +1,9 @@
-import { Role } from '@prisma/client';
-
-export enum userRole {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-  SUPERADMIN = 'SUPERADMIN'
-}
-
-const allRoles = {
-  [Role.USER]: [userRole.USER],
-  [Role.ADMIN]: [userRole.ADMIN],
-  [Role.SUPERADMIN]: [userRole.SUPERADMIN, userRole.ADMIN, userRole.USER]
+// role.ts
+export const userRole = {
+  SUPERADMIN: 1,
+  ADMIN: 2,
+  STAFF: 3,
+  USER: 4,
 };
 
-export const roles = Object.keys(allRoles);
-export const roleRights = new Map(Object.entries(allRoles));
+export type UserRole = keyof typeof userRole; // "SUPERADMIN" | "ADMIN" | "STAFF" | "USER"

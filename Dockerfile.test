@@ -1,0 +1,43 @@
+# use official Bun image
+FROM oven/bun:canary-debian AS base
+WORKDIR /usr/src/app/
+RUN apt-get update -y && \
+    apt-get install -y openssl libssl-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+FROM base AS install
+RUN mkdir -p /temp/dev
+COPY package.json bun.lockb /temp/dev/
+RUN cd /temp/dev && bun install --frozen-lockfile
+
+
+FROM base AS prisma
+COPY --from=install /temp/dev/node_modules node_modules
+COPY . .
+ENV NODE_ENV=development
+RUN bun prisma generate
+
+
+FROM base AS release
+WORKDIR /usr/src/app
+
+COPY --from=install /temp/dev/node_modules node_modules
+
+COPY . .
+RUN bun prisma generate
+
+ENV NODE_ENV=development
+USER bun
+EXPOSE 3000/tcp
+ENTRYPOINT ["sh", "-c", "set -e && \
+# Re-construct and export DATABASE_URL using current env vars
+export DATABASE_URL=\"postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}\" && \
+echo 'Re-exported DATABASE_URL based on overrides:' $DATABASE_URL && \
+echo 'Running migrations...' && \
+bun run prisma migrate deploy && \
+echo 'Running seed...' && \
+bun run ./seed.ts && \
+echo 'Starting test..' && \
+bun test && \
+echo 'Starting application...' && \
+exec bun run dev"]

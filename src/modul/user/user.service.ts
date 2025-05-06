@@ -2,7 +2,7 @@ import { error } from 'elysia';
 import ApiError from '../../utils/apiError';
 import { HttpStatusEnum } from '../../utils/httpStatusCode';
 import { db } from '../../config/prisma';
-import { Prisma, Role, User } from '@prisma/client';
+import { Prisma, Roles, Users } from '@prisma/client';
 
 export class UsersService {
   private static instance: UsersService;
@@ -14,70 +14,72 @@ export class UsersService {
 
     return UsersService.instance;
   }
-  async getUserByid<Key extends keyof User>(
+  async getUserByid<Key extends keyof Users>(
     id: string,
     keys: Key[] = [
       'id',
       'email',
       'username',
-      'addresses',
-      'role',
+      'address',
+      'roleId',
       'isEmailVerified',
       'createdAt',
       'updatedAt'
     ] as Key[]
-  ): Promise<Pick<User, Key> | null> {
-    return db.user.findUnique({
+  ): Promise<Pick<Users, Key> | null> {
+    return db.users.findUnique({
       where: { id },
       select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})
-    }) as Promise<Pick<User, Key> | null>;
+    }) as Promise<Pick<Users, Key> | null>;
   }
 
-  async getUserByEmail<Key extends keyof User>(
+  async getUserByEmail<Key extends keyof Users>(
     email: string,
     keys: Key[] = [
       'id',
       'email',
       'username',
-      'addresses',
-      'role',
+      'address',
+      'roleId',
       'isEmailVerified',
       'createdAt',
       'updatedAt'
     ] as Key[]
-  ): Promise<Pick<User, Key> | null> {
-    return db.user.findUnique({
+  ): Promise<Pick<Users, Key> | null> {
+    return db.users.findUnique({
       where: { email },
       select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})
-    }) as Promise<Pick<User, Key> | null>;
+    }) as Promise<Pick<Users, Key> | null>;
   }
 
-  async getUserByUsername<Key extends keyof User>(
+  async getUserByUsername<Key extends keyof Users>(
     username: string,
     keys: Key[] = [
       'id',
       'email',
       'username',
-      'addresses',
-      'role',
+      'address',
+      'roleId',
       'isEmailVerified',
       'createdAt',
       'updatedAt'
     ] as Key[]
-  ): Promise<Pick<User, Key> | null> {
-    return db.user.findUnique({
+  ): Promise<Pick<Users, Key> | null> {
+    return db.users.findUnique({
       where: { username },
       select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})
-    }) as Promise<Pick<User, Key> | null>;
+    }) as Promise<Pick<Users, Key> | null>;
   }
 
   async createUser(
     email: string,
     username: string,
     password: string,
-    role: Role = Role.USER,
+    roleId: number,
+    departmentId: string,
     isEmailVerified = false
-  ): Promise<User> {
+  ): Promise<Users> {
+    
     if (await this.getUserByEmail(email)) {
       throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Email already taken');
     }
@@ -88,26 +90,32 @@ export class UsersService {
     const hashedPassword = await Bun.password.hash(password, {
       algorithm: 'argon2id',
       memoryCost: 5,
-      timeCost: 5 // the number of iterations
+      timeCost: 5
     });
 
-    return db.user.create({
-      data: {
-        email,
-        username,
-        role,
-        password: hashedPassword,
-        isEmailVerified
-      }
-    });
+    try {
+      return await db.users.create({
+        data: {
+          email,
+          username,
+          roleId,
+          departmentId,
+          password: hashedPassword,
+          isEmailVerified,
+        },
+      });
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
   }
 
-  async updateUser<Key extends keyof User>(
+  async updateUser<Key extends keyof Users>(
     userId: string,
-    updateBody: Prisma.UserUpdateInput,
-    keys: Key[] = ['id', 'email', 'username', 'role'] as Key[]
-  ): Promise<Pick<User, Key> | null> {
-    const user = await this.getUserByid(userId, ['id', 'email', 'username']);
+    updateBody: Prisma.UsersUncheckedUpdateInput,
+    keys: Key[] = ['id', 'email', 'username', 'roleId', 'departmentId'] as Key[]
+  ): Promise<Pick<Users, Key> | null> {
+    const user = await this.getUserByid(userId, ['id', 'email', 'username', 'roleId', 'departmentId']);
 
     if (!user) {
       throw new ApiError(HttpStatusEnum.HTTP_404_NOT_FOUND, 'User not found');
@@ -122,42 +130,35 @@ export class UsersService {
       throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Email or Username already taken');
     }
 
-    const updatedUser = await db.user.update({
-      where: { id: user.id },
-      data: updateBody,
-      select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})
-    });
-
-    return updatedUser as Pick<User, Key> | null;
-  }
-
-  async updateUserRole<Key extends keyof User>(
-    userId: string,
-    role: Role,
-    keys: Key[] = ['id', 'email', 'username', 'role'] as Key[]
-  ): Promise<Pick<User, Key> | null> {
-    const user = await this.getUserByid(userId);
-    if (!user) {
-      throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Username already taken');
+    if (updateBody.password) {
+      updateBody.password = await Bun.password.hash(updateBody.password as string, {
+        algorithm: 'argon2id',
+        memoryCost: 5,
+        timeCost: 5,
+      });
     }
 
-    const updatedUserRole = await db.user.update({
+    const updatedUser = await db.users.update({
       where: { id: user.id },
       data: {
-        role
+        email: updateBody.email,
+        username: updateBody.username,
+        password: updateBody.password,
+        roleId: updateBody.roleId,
+        departmentId: updateBody.departmentId
       },
       select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {})
     });
 
-    return updatedUserRole as Pick<User, Key> | null;
+    return updatedUser as Pick<Users, Key> | null;
   }
 
-  async deleteUserById(userId: string): Promise<User> {
+  async deleteUserById(userId: string): Promise<Users> {
     const user = await this.getUserByid(userId);
     if (!user) {
       throw new ApiError(HttpStatusEnum.HTTP_400_BAD_REQUEST, 'Username already taken');
     }
-    await db.user.delete({
+    await db.users.delete({
       where: { id: user.id }
     });
     return user;
